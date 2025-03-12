@@ -122,6 +122,12 @@
     </div>
 </div>
 
+<!-- Script -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
 <script>
     function toggleModal(id) {
         document.getElementById(id).classList.toggle('hidden');

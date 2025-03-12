@@ -3,42 +3,48 @@
 @section('title', 'Manajemen Kategori')
 
 @section('content')
-<div class="max-w-6xl mx-auto p-4">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-            <i class="ni ni-tag mr-2"></i> Manajemen Kategori
-        </h2>
-        <button @click="openAddModal"
-            class="btn btn-primary">
-            <i class="ni ni-fat-add"></i> Tambah Kategori
-        </button>
+<div class="container mx-auto p-6">
+    <h2 class="text-2xl font-semibold text-blue-700 flex items-center mb-4">
+        <i class="ni ni-tag mr-2"></i> Manajemen Kategori
+    </h2>
+
+    <!-- Catatan Halaman -->
+    <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4">
+        <i class="ni ni-single-copy-04"></i> <strong>Catatan:</strong> Halaman ini digunakan untuk mengelola kategori artikel atau produk.
     </div>
 
-    <!-- Tabel Kategori -->
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <table class="table w-full">
-            <thead class="bg-gray-200 text-gray-700">
+    <!-- Tombol Tambah Kategori -->
+    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md mb-3" onclick="toggleModal('addModal')">
+        <i class="ni ni-fat-add mr-2"></i>+ Tambah Kategori
+    </button>
+
+    <!-- Tabel Data -->
+    <div class="bg-white shadow-md rounded-lg p-4">
+        <table id="categoryTable" class="stripe hover w-full text-sm text-left">
+            <thead class="bg-blue-600 text-white">
                 <tr>
-                    <th class="py-3 px-4">Nama</th>
-                    <th class="py-3 px-4">Deskripsi</th>
-                    <th class="py-3 px-4 text-center">Aksi</th>
+                    <th class="p-3">Nama</th>
+                    <th class="p-3">Deskripsi</th>
+                    <th class="p-3">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-300">
+            <tbody>
                 @foreach ($categories as $category)
                 <tr>
-                    <td class="py-2 px-4">{{ $category->name }}</td>
-                    <td class="py-2 px-4">{{ $category->description }}</td>
-                    <td class="py-2 px-4 text-center">
-                        <button @click="openEditModal({{ $category->id }}, '{{ $category->name }}', '{{ $category->description }}')"
-                            class="btn btn-warning btn-sm">
+                    <td class="p-3">{{ $category->name }}</td>
+                    <td class="p-3">{{ $category->description }}</td>
+                    <td class="p-3 flex gap-2">
+                        <!-- Tombol Edit -->
+                        <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md"
+                                onclick="editCategory('{{ $category->id }}', '{{ $category->name }}', '{{ $category->description }}')">
                             <i class="ni ni-ruler-pencil"></i> Edit
                         </button>
 
-                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
+                        <!-- Tombol Hapus -->
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-error btn-sm">
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md">
                                 <i class="ni ni-fat-remove"></i> Hapus
                             </button>
                         </form>
@@ -50,79 +56,68 @@
     </div>
 </div>
 
-<!-- Alpine.js -->
-<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-<!-- Modal Tambah & Edit -->
-<div x-data="categoryModal()" x-cloak>
-    <!-- Modal Tambah -->
-    <div x-show="isAddModalOpen" class="modal modal-open">
-        <div class="modal-box">
-            <h2 class="text-xl font-semibold mb-4">Tambah Kategori</h2>
-            <form action="{{ route('categories.store') }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <label class="label">Nama Kategori</label>
-                    <input type="text" name="name" class="input input-bordered w-full">
-                </div>
-                <div class="mb-3">
-                    <label class="label">Deskripsi</label>
-                    <textarea name="description" class="textarea textarea-bordered w-full"></textarea>
-                </div>
-                <div class="modal-action">
-                    <button type="button" @click="isAddModalOpen = false" class="btn">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Edit -->
-    <div x-show="isEditModalOpen" class="modal modal-open">
-        <div class="modal-box">
-            <h2 class="text-xl font-semibold mb-4">Edit Kategori</h2>
-            <form id="editForm" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="mb-3">
-                    <label class="label">Nama Kategori</label>
-                    <input type="text" name="name" x-model="editName" class="input input-bordered w-full">
-                </div>
-                <div class="mb-3">
-                    <label class="label">Deskripsi</label>
-                    <textarea name="description" x-model="editDescription" class="textarea textarea-bordered w-full"></textarea>
-                </div>
-                <div class="modal-action">
-                    <button type="button" @click="isEditModalOpen = false" class="btn">Batal</button>
-                    <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
+<!-- Modal Tambah -->
+<div id="addModal" class="hidden fixed inset-0 flex items-center justify-center bg-white bg-opacity-50">
+    <div class="bg-white w-1/3 p-6 rounded-lg">
+        <h5 class="text-lg font-semibold">Tambah Kategori</h5>
+        <form action="{{ route('categories.store') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label class="block">Nama Kategori</label>
+                <input type="text" name="name" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div class="mb-3">
+                <label class="block">Deskripsi</label>
+                <textarea name="description" class="w-full p-2 border rounded-md" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 mt-3 rounded-md">Tambah</button>
+        </form>
+        <button class="w-full bg-gray-500 text-white px-4 py-2 mt-3 rounded-md" onclick="toggleModal('addModal')">Batal</button>
     </div>
 </div>
 
+<!-- Modal Edit -->
+<div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white w-1/3 p-6 rounded-lg">
+        <h5 class="text-lg font-semibold">Edit Kategori</h5>
+        <form id="editForm" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="mb-3">
+                <label class="block">Nama Kategori</label>
+                <input type="text" name="name" id="editName" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div class="mb-3">
+                <label class="block">Deskripsi</label>
+                <textarea name="description" id="editDescription" class="w-full p-2 border rounded-md" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 mt-3 rounded-md">Simpan Perubahan</button>
+        </form>
+        <button class="w-full bg-gray-500 text-white px-4 py-2 mt-3 rounded-md" onclick="toggleModal('editModal')">Batal</button>
+    </div>
+</div>
+
+<!-- Script -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
+
 <script>
-function categoryModal() {
-    return {
-        isAddModalOpen: false,
-        isEditModalOpen: false,
-        editId: '',
-        editName: '',
-        editDescription: '',
+    $(document).ready(function () {
+        $('#categoryTable').DataTable();
+    });
 
-        openAddModal() {
-            this.isAddModalOpen = true;
-        },
+    function toggleModal(modalId) {
+        document.getElementById(modalId).classList.toggle('hidden');
+    }
 
-        openEditModal(id, name, description) {
-            this.editId = id;
-            this.editName = name;
-            this.editDescription = description;
-            document.getElementById('editForm').action = `/categories/${id}`;
-            this.isEditModalOpen = true;
-        }
-    };
-}
+    function editCategory(id, name, description) {
+        document.getElementById('editForm').action = `/categories/${id}`;
+        document.getElementById('editName').value = name;
+        document.getElementById('editDescription').value = description;
+        toggleModal('editModal');
+    }
 </script>
 
 @endsection
