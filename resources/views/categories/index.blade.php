@@ -21,7 +21,7 @@
     <!-- Tabel Data -->
     <div class="bg-white shadow-md rounded-lg p-4">
         <table id="categoryTable" class="stripe hover w-full text-sm text-left">
-            <thead class="bg-blue-600 text-white">
+            <thead class="bg-gray-400 text-white">
                 <tr>
                     <th class="p-3">Nama</th>
                     <th class="p-3">Deskripsi</th>
@@ -100,7 +100,7 @@
 <!-- Script -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdn.tailwindcss.com/"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
 
 <script>
