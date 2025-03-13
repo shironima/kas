@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - KAS RT')
+@section('title', 'Dashboard')
 
 @section('content')
     <div class="container mx-auto p-6">
