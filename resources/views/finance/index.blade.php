@@ -3,14 +3,18 @@
 @section('content')
 <div class="container mx-auto p-6">
     <!-- Ringkasan Keuangan -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-green-500 text-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-green-400 text-white p-6 rounded-lg shadow-lg flex flex-col items-center">
             <h5 class="text-lg font-bold">Total Pemasukan</h5>
             <h2 class="text-3xl font-semibold mt-2">Rp{{ number_format($totalIncome ?? 0, 0, ',', '.') }}</h2>
         </div>
-        <div class="bg-red-500 text-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+        <div class="bg-red-400 text-white p-6 rounded-lg shadow-lg flex flex-col items-center">
             <h5 class="text-lg font-bold">Total Pengeluaran</h5>
             <h2 class="text-3xl font-semibold mt-2">Rp{{ number_format($totalExpense ?? 0, 0, ',', '.') }}</h2>
+        </div>
+        <div class="{{ $totalBalance > 0 ? 'bg-green-400' : ($totalBalance == 0 ? 'bg-yellow-400' : 'bg-red-400') }} text-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+            <h5 class="text-lg font-bold">Total Saldo</h5>
+            <h2 class="text-3xl font-semibold mt-2">Rp{{ number_format($totalBalance ?? 0, 0, ',', '.') }}</h2>
         </div>
     </div>
 

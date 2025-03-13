@@ -14,42 +14,46 @@ use App\Exports\FinanceReportExport;
 class FinanceController extends Controller
 {
     public function index(Request $request)
-{
-    $selectedRT = $request->rt_id; // Filter RT
-    $selectedCategory = $request->category_id; // Filter Kategori
-    $tab = $request->tab ?? 'income'; // Default tab pemasukan
+    {
+        $selectedRT = $request->rt_id; // Filter RT
+        $selectedCategory = $request->category_id; // Filter Kategori
+        $tab = $request->tab ?? 'income'; // Default tab pemasukan
 
-    // Query Pemasukan
-    $incomesQuery = Income::with('category', 'rt');
-    if ($selectedRT) {
-        $incomesQuery->where('rts_id', $selectedRT);
-    }
-    if ($selectedCategory) {
-        $incomesQuery->where('category_id', $selectedCategory);
-    }
-    $incomes = $incomesQuery->latest()->get();
-    $totalIncome = $incomes->sum('amount');
+        // Query Pemasukan
+        $incomesQuery = Income::with('category', 'rt');
+        if ($selectedRT) {
+            $incomesQuery->where('rts_id', $selectedRT);
+        }
+        if ($selectedCategory) {
+            $incomesQuery->where('category_id', $selectedCategory);
+        }
+        $incomes = $incomesQuery->latest()->get();
+        $totalIncome = $incomes->sum('amount');
 
-    // Query Pengeluaran
-    $expensesQuery = Expense::with('category', 'rt');
-    if ($selectedRT) {
-        $expensesQuery->where('rts_id', $selectedRT);
-    }
-    if ($selectedCategory) {
-        $expensesQuery->where('category_id', $selectedCategory);
-    }
-    $expenses = $expensesQuery->latest()->get();
-    $totalExpense = $expenses->sum('amount');
+        // Query Pengeluaran
+        $expensesQuery = Expense::with('category', 'rt');
+        if ($selectedRT) {
+            $expensesQuery->where('rts_id', $selectedRT);
+        }
+        if ($selectedCategory) {
+            $expensesQuery->where('category_id', $selectedCategory);
+        }
+        $expenses = $expensesQuery->latest()->get();
+        $totalExpense = $expenses->sum('amount');
 
-    // Ambil daftar RT dan Kategori untuk dropdown
-    $rts = RT::all();
-    $categories = Category::all();
+        // Hitung Total Saldo
+        $totalBalance = $totalIncome - $totalExpense;
 
-    return view('finance.index', compact(
-        'totalIncome', 'totalExpense', 'incomes', 'expenses',
-        'rts', 'categories', 'selectedRT', 'selectedCategory', 'tab'
-    ));
-}
+        // Ambil daftar RT dan Kategori untuk dropdown
+        $rts = RT::all();
+        $categories = Category::all();
+
+        return view('finance.index', compact(
+            'totalIncome', 'totalExpense', 'totalBalance', 'incomes', 'expenses',
+            'rts', 'categories', 'selectedRT', 'selectedCategory', 'tab'
+        ));
+    }
+
 
     public function store(Request $request)
     {
