@@ -24,10 +24,6 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
-// Reset Password
-// Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-// Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
-
 // Protected Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
@@ -46,6 +42,13 @@ Route::middleware('auth')->group(function () {
 
     // Route untuk manajemen keuangan
     Route::resource('finance', FinanceController::class)->except(['create', 'show']);
+
+    // Route untuk laporan keuangan (filter & eksport)
+    Route::prefix('finance/reports')->group(function () {
+        Route::get('/', [FinanceController::class, 'generateReport'])->name('finance.report.generate');
+        Route::get('/export/excel', [FinanceController::class, 'exportExcel'])->name('finance.report.excel');
+        Route::get('/export/pdf', [FinanceController::class, 'exportPdf'])->name('finance.report.pdf');
+    });
 
     // Route untuk manajemen RT
     Route::resource('rt', RTController::class)->except(['show', 'create', 'edit']);

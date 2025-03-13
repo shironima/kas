@@ -12,18 +12,29 @@ class FinanceReportExport implements FromCollection, WithHeadings
 {
     protected $startDate;
     protected $endDate;
+    protected $selectedRTs;
 
-    public function __construct($startDate, $endDate)
+    public function __construct($startDate, $endDate, $selectedRTs = [])
     {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->selectedRTs = $selectedRTs;
     }
 
     public function collection()
     {
-        // Ambil data berdasarkan tanggal
-        $incomes = Income::whereBetween('transaction_date', [$this->startDate, $this->endDate])->get();
-        $expenses = Expense::whereBetween('transaction_date', [$this->startDate, $this->endDate])->get();
+        // Query Pemasukan
+        $incomesQuery = Income::whereBetween('transaction_date', [$this->startDate, $this->endDate]);
+        $expensesQuery = Expense::whereBetween('transaction_date', [$this->startDate, $this->endDate]);
+
+        // Jika RT dipilih, filter berdasarkan RT yang dipilih
+        if (!empty($this->selectedRTs)) {
+            $incomesQuery->whereIn('rts_id', $this->selectedRTs);
+            $expensesQuery->whereIn('rts_id', $this->selectedRTs);
+        }
+
+        $incomes = $incomesQuery->get();
+        $expenses = $expensesQuery->get();
 
         $data = [];
 
@@ -32,6 +43,7 @@ class FinanceReportExport implements FromCollection, WithHeadings
                 'Date' => $income->transaction_date,
                 'Type' => 'Income',
                 'Category' => $income->category->name ?? 'N/A',
+                'RT' => $income->rt->name ?? 'N/A',
                 'Amount' => $income->amount,
             ];
         }
@@ -41,6 +53,7 @@ class FinanceReportExport implements FromCollection, WithHeadings
                 'Date' => $expense->transaction_date,
                 'Type' => 'Expense',
                 'Category' => $expense->category->name ?? 'N/A',
+                'RT' => $expense->rt->name ?? 'N/A',
                 'Amount' => $expense->amount,
             ];
         }
@@ -50,6 +63,6 @@ class FinanceReportExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['Date', 'Type', 'Category', 'Amount'];
+        return ['Date', 'Type', 'Category', 'RT', 'Amount'];
     }
 }

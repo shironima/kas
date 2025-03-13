@@ -35,6 +35,15 @@
                     <span>Keuangan</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('finance.report.generate') }}" 
+                    class="flex items-center gap-2 px-4 py-2 rounded-md 
+                        text-gray-700 hover:bg-gray-100 
+                        {{ request()->routeIs('finance.report.generate') ? 'bg-blue-100' : '' }}">
+                    <i class="bi bi-printer-fill text-danger"></i>
+                    <span>Cetak Laporan</span>
+                </a>
+            </li>
 
             <!-- Divider -->
             <hr class="my-2 border-gray-300">

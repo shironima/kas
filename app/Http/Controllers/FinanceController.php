@@ -9,6 +9,7 @@ use App\Models\Expense;
 use App\Models\RT;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\FinanceReportExport;
 
 class FinanceController extends Controller
@@ -97,26 +98,53 @@ class FinanceController extends Controller
 
     public function generateReport(Request $request)
     {
-        $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date'
-        ]);
+        $rts = RT::all(); // Ambil semua data RT
 
-        // Ambil data sesuai rentang waktu
-        $incomes = Income::whereBetween('transaction_date', [$request->start_date, $request->end_date])->get();
-        $expenses = Expense::whereBetween('transaction_date', [$request->start_date, $request->end_date])->get();
+        return view('finance.reports.index', compact('rts'));
+    }
 
+    public function exportPdf(Request $request)
+    {
+        // Ambil filter dari request
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $selectedRTs = $request->input('rts_id', []);
+
+        // Ambil data pemasukan & pengeluaran berdasarkan filter
+        $incomes = Income::whereBetween('transaction_date', [$startDate, $endDate])
+                    ->when(!empty($selectedRTs), function ($query) use ($selectedRTs) {
+                        return $query->whereIn('rts_id', $selectedRTs);
+                    })
+                    ->get();
+
+        $expenses = Expense::whereBetween('transaction_date', [$startDate, $endDate])
+                    ->when(!empty($selectedRTs), function ($query) use ($selectedRTs) {
+                        return $query->whereIn('rts_id', $selectedRTs);
+                    })
+                    ->get();
+
+        // Hitung total
         $totalIncome = $incomes->sum('amount');
         $totalExpense = $expenses->sum('amount');
-        $totalSaldo = $totalIncome - $totalExpense;
+        $totalBalance = $totalIncome - $totalExpense;
 
-        $periode = Carbon::parse($request->start_date)->format('d M Y') . " - " . Carbon::parse($request->end_date)->format('d M Y');
+        // Kirim data ke view PDF
+        $pdf = Pdf::loadView('finance.reports.pdf', compact('incomes', 'expenses', 'totalIncome', 'totalExpense', 'totalBalance', 'startDate', 'endDate'));
 
-        return view('finance.reports.index', compact('incomes', 'expenses', 'totalIncome', 'totalExpense', 'totalSaldo', 'periode'));
+        // Download PDF
+        return $pdf->download('Laporan_Keuangan.pdf');
     }
 
     public function exportExcel(Request $request)
     {
-        return Excel::download(new FinanceReportExport($request->start_date, $request->end_date), 'Laporan-Keuangan.xlsx');
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        $selectedRTs = $request->rt_id ?? []; // Ambil RT yang dipilih (bisa lebih dari satu)
+
+        return Excel::download(new FinanceReportExport($request->start_date, $request->end_date, $selectedRTs), 'Laporan-Keuangan.xlsx');
     }
+
 }

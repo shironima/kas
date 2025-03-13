@@ -7,6 +7,7 @@
                     <th class="px-5 py-3 border">No</th>
                     <th class="px-5 py-3 border">Tanggal</th>
                     <th class="px-5 py-3 border">Kategori</th>
+                    <th class="px-5 py-3 border">Deskripsi</th>
                     <th class="px-5 py-3 border">Jumlah</th>
                     <th class="px-5 py-3 border">RT</th>
                 </tr>
@@ -17,6 +18,7 @@
                     <td class="px-5 py-3 border">{{ $key + 1 }}</td>
                     <td class="px-5 py-3 border text-nowrap">{{ $income->transaction_date }}</td>
                     <td class="px-5 py-3 border">{{ $income->category->name }}</td>
+                    <td class="px-5 py-3 border">{{ $income->description }}</td>
                     <td class="px-5 py-3 border font-semibold text-gray-700">Rp{{ number_format($income->amount, 0, ',', '.') }}</td>
                     <td class="px-5 py-3 border">{{ $income->rt->name }}</td>
                 </tr>

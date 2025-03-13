@@ -17,7 +17,7 @@
 
     <!-- Catatan Halaman -->
     <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4">
-        <i class="ni ni-single-copy-04"></i> <strong>Catatan:</strong> Halaman ini digunakan untuk mengelola kategori pengemasukan atau pengeluaran.
+        <i class="ni ni-single-copy-04"></i> <strong>Catatan:</strong> Halaman ini digunakan untuk mengelola kategori pemasukan atau pengeluaran.
     </div>
 
     <!-- Filter -->
