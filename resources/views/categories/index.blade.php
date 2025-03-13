@@ -6,7 +6,7 @@
 <div class="container mx-auto p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold text-blue-700 flex items-center">
+        <h2 class="text-2xl font-semibold text-black-700 flex items-center">
             <i class="ni ni-tag mr-2"></i> Manajemen Kategori
         </h2>
         <button onclick="toggleModal('addModal')" 
