@@ -2,7 +2,17 @@
 
 @section('content')
 <div class="container mx-auto p-6">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Laporan Keuangan</h2>
+    <!--- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-black-700 flex items-center">
+            <i class="ni ni-tag mr-2"></i> Laporan Keuangan
+        </h2>
+    </div>
+
+    <!-- Catatan Halaman -->
+    <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4">
+        <i class="ni ni-single-copy-04"></i> <strong>Catatan:</strong> Silahkan pilih laporan yang akan di print-out.
+    </div>
 
     <!-- Form Filter -->
     <form action="{{ route('finance.report.generate') }}" method="GET" class="bg-white p-6 rounded-lg shadow-md mb-6">
