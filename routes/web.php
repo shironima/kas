@@ -56,6 +56,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
     // Route untuk manajemen akun role : admin_rt
     Route::resource('admin-rt', AdminRTController::class);
+    Route::get('/admin-rt/data', [AdminRTController::class, 'getData'])->name('admin-rt.data');
 
     // Route untuk manajemen kategori
     Route::resource('categories', CategoryController::class)->except(['create', 'show']);
