@@ -10,6 +10,7 @@ use App\Http\Controllers\RTController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\AdminRTController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -25,7 +26,7 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkReques
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 // Protected Routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -52,6 +53,9 @@ Route::middleware('auth')->group(function () {
 
     // Route untuk manajemen RT
     Route::resource('rt', RTController::class)->except(['show', 'create', 'edit']);
+
+    // Route untuk manajemen akun role : admin_rt
+    Route::resource('admin-rt', AdminRTController::class);
 
     // Route untuk manajemen kategori
     Route::resource('categories', CategoryController::class)->except(['create', 'show']);

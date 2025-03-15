@@ -82,6 +82,14 @@
                 <label class="block font-medium">Kontak Ketua RT</label>
                 <input type="text" name="head_contact" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
             </div>
+            <div class="mb-3">
+                <label class="block font-medium">Email</label>
+                <input type="email" name="email" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <div class="mb-3">
+                <label class="block font-medium">Password</label>
+                <input type="password" name="password" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
             <div class="flex justify-end gap-2">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-md" onclick="toggleModal('addModal')">Batal</button>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Tambah</button>
@@ -90,11 +98,38 @@
     </div>
 </div>
 
+<!-- Modal Edit -->
+<div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white w-1/3 p-6 rounded-lg shadow-lg">
+        <h5 class="text-lg font-semibold mb-4">Edit RT</h5>
+        <form id="editForm" method="POST">
+            @csrf
+            @method('PATCH')
+            <div class="mb-3">
+                <label class="block font-medium">Nama RT</label>
+                <input type="text" id="editRTName" name="name" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <div class="mb-3">
+                <label class="block font-medium">Nama Ketua RT</label>
+                <input type="text" id="editRTHead" name="head_name" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <div class="mb-3">
+                <label class="block font-medium">Kontak Ketua RT</label>
+                <input type="text" id="editRTContact" name="head_contact" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-md" onclick="toggleModal('editModal')">Batal</button>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
+
 <script>
     $(document).ready(function () {
         $('#rtTable').DataTable({
@@ -108,13 +143,10 @@
     }
 
     function editRT(id, name, head, contact) {
-        document.getElementById('editRTName').value = name;
-        document.getElementById('editRTHead').value = head;
-        document.getElementById('editRTContact').value = contact;
-        
-        let form = document.getElementById('editForm');
-        form.action = "{{ url('rt') }}/" + id;
-
+        $('#editRTName').val(name);
+        $('#editRTHead').val(head);
+        $('#editRTContact').val(contact);
+        $('#editForm').attr('action', "{{ url('rt') }}/" + id);
         toggleModal('editModal');
     }
 

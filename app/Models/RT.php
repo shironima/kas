@@ -9,6 +9,15 @@ class RT extends Model
 {
     use HasFactory;
     protected $table = 'rts';
-    protected $fillable = ['name', 'head_name', 'head_contact'];
+    protected $fillable = [
+        'name', 
+        'head_name', 
+        'head_contact',
+    ];
+
+    public function adminRT()
+    {
+        return $this->hasOne(User::class, 'rts_id');
+    }
     
 }
