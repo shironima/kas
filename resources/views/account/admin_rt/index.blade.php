@@ -115,6 +115,11 @@
                 <input type="email" id="editEmail" name="email" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
             </div>
             <div class="mb-3">
+                <label class="block font-medium">Password Baru (Opsional)</label>
+                <input type="password" id="editPassword" name="password" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200">
+                <p class="text-xs text-gray-600 mt-1">Kosongkan jika tidak ingin mengubah password.</p>
+            </div>
+            <div class="mb-3">
                 <label class="block font-medium">RT</label>
                 <select id="editRT" name="rts_id" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
                     <option value="">-- Pilih RT --</option>
@@ -132,6 +137,11 @@
 </div>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
+
 <script>
     function toggleModal(id) {
         document.getElementById(id).classList.toggle('hidden');

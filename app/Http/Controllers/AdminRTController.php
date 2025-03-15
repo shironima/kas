@@ -13,11 +13,8 @@ class AdminRTController extends Controller
 {
     public function index()
     {
-        $adminRT = User::whereHas('role', function ($query) {
-            $query->where('name', 'admin_rt');
-        })->get();
-
-        $rts = RT::all();
+        $adminRT = User::where('role', 'admin_rt')->with('rt')->get();
+        $rts = RT::all(); // Ambil semua data RT untuk dropdown
 
         return view('account.admin_rt.index', compact('adminRT', 'rts'));
     }
@@ -60,12 +57,14 @@ class AdminRTController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $admin_rt->id,
+            'password' => 'nullable|string|min:8',
             'rts_id' => 'required|exists:rts,id'
         ]);
 
         $admin_rt->update([
             'name' => $request->name,
             'email' => $request->email,
+            'password' => Hash::make($request->password),
             'rts_id' => $request->rts_id,
         ]);
 
