@@ -37,8 +37,8 @@
                     <i class="bi bi-calendar-event text-yellow-500 text-2xl"></i>
                 </div>
                 <h5 class="font-semibold text-gray-800 mt-4">Laporan Kegiatan</h5>
-                <p class="text-gray-600 text-center mt-2 text-sm">Pantau dan kelola kegiatan di lingkungan RT Anda.</p>
-                <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 mt-4 rounded-md transition">
+                <p class="text-gray-600 text-center mt-2 text-sm">Pantau dan kelola keuangan di lingkungan RT Anda.</p>
+                <a href="{{ route('finance.report.generate') }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 mt-4 rounded-md transition">
                     Lihat Laporan
                 </a>
             </div>
