@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->decimal('amount', 15, 2);
+            $table->date('transaction_date');
             $table->text('description')->nullable();
             $table->timestamps();
         });

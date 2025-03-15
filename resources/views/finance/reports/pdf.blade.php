@@ -5,54 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Keuangan</title>
     <style>
-        body { font-family: Arial, sans-serif; }
+        body { font-family: Arial, sans-serif; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th, td { border: 1px solid black; padding: 5px; text-align: left; }
         th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
 
     <h2 style="text-align: center;">Laporan Keuangan</h2>
-    <p>Periode: {{ $startDate }} - {{ $endDate }}</p>
+    <p><strong>Periode:</strong> {{ $startDate }} - {{ $endDate }}</p>
 
+    <h3>Pemasukan</h3>
     <table>
         <thead>
             <tr>
-                <th>Tanggal</th>
-                <th>Jenis</th>
+                <th>ID</th>
+                <th>Nama</th>
                 <th>Kategori</th>
-                <th>RT</th>
                 <th>Jumlah</th>
+                <th>Keterangan</th>
+                <th>RT</th>
+                <th>Tanggal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($incomes as $income)
-            <tr>
-                <td>{{ $income->transaction_date }}</td>
-                <td>Pemasukan</td>
-                <td>{{ $income->category->name ?? 'N/A' }}</td>
-                <td>{{ $income->rt->name ?? 'N/A' }}</td>
-                <td style="color: green;">+Rp {{ number_format($income->amount, 0, ',', '.') }}</td>
-            </tr>
-            @endforeach
-
-            @foreach($expenses as $expense)
-            <tr>
-                <td>{{ $expense->transaction_date }}</td>
-                <td>Pengeluaran</td>
-                <td>{{ $expense->category->name ?? 'N/A' }}</td>
-                <td>{{ $expense->rt->name ?? 'N/A' }}</td>
-                <td style="color: red;">-Rp {{ number_format($expense->amount, 0, ',', '.') }}</td>
-            </tr>
+            @foreach ($incomes as $income)
+                <tr>
+                    <td>{{ $income->id }}</td>
+                    <td>{{ $income->name }}</td>
+                    <td>{{ optional($income->category)->name }}</td>
+                    <td>Rp {{ number_format($income->amount, 2) }}</td>
+                    <td>{{ $income->description }}</td>
+                    <td>{{ optional($income->rt)->name }}</td>
+                    <td>{{ $income->transaction_date }}</td>
+                </tr>
             @endforeach
         </tbody>
     </table>
 
-    <h3>Total:</h3>
-    <p>Total Pemasukan: <span style="color: green;">Rp {{ number_format($totalIncome, 0, ',', '.') }}</span></p>
-    <p>Total Pengeluaran: <span style="color: red;">Rp {{ number_format($totalExpense, 0, ',', '.') }}</span></p>
-    <p>Total Saldo: <span style="color: blue;">Rp {{ number_format($totalBalance, 0, ',', '.') }}</span></p>
+    <h3>Pengeluaran</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Kategori</th>
+                <th>Jumlah</th>
+                <th>Keterangan</th>
+                <th>RT</th>
+                <th>Tanggal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($expenses as $expense)
+                <tr>
+                    <td>{{ $expense->id }}</td>
+                    <td>{{ $expense->name }}</td>
+                    <td>{{ optional($expense->category)->name }}</td>
+                    <td>Rp {{ number_format($expense->amount, 2) }}</td>
+                    <td>{{ $expense->description }}</td>
+                    <td>{{ optional($expense->rt)->name }}</td>
+                    <td>{{ $expense->transaction_date }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <h3>Ringkasan</h3>
+    <p><strong>Total Pemasukan:</strong> Rp {{ number_format($totalIncome, 2) }}</p>
+    <p><strong>Total Pengeluaran:</strong> Rp {{ number_format($totalExpense, 2) }}</p>
+    <p><strong>Saldo Akhir:</strong> Rp {{ number_format($totalBalance, 2) }}</p>
 
 </body>
 </html>

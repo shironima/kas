@@ -14,7 +14,7 @@
                 </div>
                 <h5 class="font-semibold text-gray-800 mt-4">Statistik Keuangan</h5>
                 <p class="text-gray-600 text-center mt-2 text-sm">Lihat ringkasan pemasukan dan pengeluaran kas RT.</p>
-                <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 mt-4 rounded-md transition">
+                <a href="{{ route('finance.index') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 mt-4 rounded-md transition">
                     Lihat Detail
                 </a>
             </div>

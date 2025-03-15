@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('rts', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // RT Name (e.g., RT 01, RT 02)
+            $table->string('name'); // RT Name (e.g., RT 01, RT 02)
             $table->string('head_name'); // RT Head Name
             $table->string('head_contact'); // RT Head Contact Number
             $table->timestamps();
