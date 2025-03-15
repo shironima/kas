@@ -14,7 +14,7 @@ class AdminRTController extends Controller
     public function index()
     {
         $adminRT = User::where('role', 'admin_rt')->with('rt')->get();
-        $rts = RT::all(); // Ambil semua data RT untuk dropdown
+        $rts = RT::all();
 
         return view('account.admin_rt.index', compact('adminRT', 'rts'));
     }

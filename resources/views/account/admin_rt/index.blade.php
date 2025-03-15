@@ -71,7 +71,8 @@
 <!-- Modal Tambah -->
 <div id="addModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white w-1/3 p-6 rounded-lg shadow-lg">
-        <h5 class="text-lg font-semibold mb-4">Tambah Admin RT</h5>
+        <h5 class="text-lg font-semibold mb-2">Tambah Admin RT</h5>
+        <p class="text-sm text-gray-700 mb-4">Email dan password yang dimasukkan akan digunakan untuk login ke sistem.</p>
         <form action="{{ route('admin-rt.store') }}" method="POST">
             @csrf
             <div class="mb-3">
@@ -81,6 +82,10 @@
             <div class="mb-3">
                 <label class="block font-medium">Email</label>
                 <input type="email" name="email" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+            </div>
+            <div class="mb-3">
+                <label class="block font-medium">Password</label>
+                <input type="password" name="password" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
             </div>
             <div class="mb-3">
                 <label class="block font-medium">RT</label>
