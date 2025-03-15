@@ -90,7 +90,7 @@
             </div>
             <div class="mb-3">
                 <label class="block font-medium">Deskripsi</label>
-                <textarea name="description" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required></textarea>
+                <textarea name="description" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200"></textarea>
             </div>
             <div class="flex justify-end gap-2">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-md" onclick="toggleModal('addModal')">Batal</button>
