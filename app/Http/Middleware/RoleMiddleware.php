@@ -16,10 +16,16 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, $role)
     {
-        if (!Auth::check() || !Auth::user()->hasRole($role)) {
-            abort(403, 'Anda tidak memiliki izin untuk mengakses halaman ini.');
+        if (!Auth::check()) {
+            abort(403, 'User belum login.');
+        }
+
+        $user = Auth::user();
+        if (!$user->hasRole($role)) {
+            abort(403, "User tidak memiliki role yang dibutuhkan. Role saat ini: " . implode(', ', $user->getRoleNames()->toArray()));
         }
 
         return $next($request);
     }
+
 }

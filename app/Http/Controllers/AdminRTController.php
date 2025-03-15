@@ -13,11 +13,13 @@ class AdminRTController extends Controller
 {
     public function index()
     {
-        $admins = User::whereHas('roles', function ($query) {
+        $adminRT = User::whereHas('role', function ($query) {
             $query->where('name', 'admin_rt');
         })->get();
-        
-        return view('account.admin_rt.index', compact('admins'));
+
+        $rts = RT::all();
+
+        return view('account.admin_rt.index', compact('adminRT', 'rts'));
     }
 
     public function create()

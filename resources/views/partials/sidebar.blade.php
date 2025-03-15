@@ -68,6 +68,15 @@
                     <span>RT</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin-rt.index') }}" 
+                    class="flex items-center gap-2 px-4 py-2 rounded-md 
+                        text-gray-700 hover:bg-gray-100 
+                        {{ request()->routeIs('admin-rt.index') ? 'bg-blue-100' : '' }}">
+                    <i class="bi bi-tags text-warning"></i>
+                    <span>Akun Admin RT</span>
+                </a>
+            </li>
 
             <!-- Divider -->
             <hr class="my-2 border-gray-300">
