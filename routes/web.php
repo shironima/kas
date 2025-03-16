@@ -63,7 +63,9 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin_rt'])->group(function () {
-    Route::get('/dashboard/admin-rt', [AdminRTController::class, 'index'])->name('admin-rt.dashboard');
+    Route::get('/dashboard-rt', function () {
+        return view('dashboard-rt');
+    })->name('dashboardRT');
 
     Route::resource('expenses-rt', ExpenseController::class);
 

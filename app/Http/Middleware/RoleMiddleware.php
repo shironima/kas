@@ -22,7 +22,8 @@ class RoleMiddleware
 
         $user = Auth::user();
         if (!$user->hasRole($role)) {
-            abort(403, "User tidak memiliki role yang dibutuhkan. Role saat ini: " . implode(', ', $user->getRoleNames()->toArray()));
+
+            abort(403, "User tidak memiliki role yang dibutuhkan. Role saat ini: " . $user->getRoleNames()->implode(', '));
         }
 
         return $next($request);

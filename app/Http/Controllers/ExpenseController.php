@@ -14,20 +14,23 @@ class ExpenseController extends Controller
         $user = auth()->user();
         $rtId = $request->input('rts_id');
 
+        // Jika Super Admin, bisa melihat semua data dan filter berdasarkan RT
         if ($user->hasRole('super_admin')) {
             $expenses = Expense::with('category', 'rt')
                 ->when($rtId, function ($query) use ($rtId) {
                     return $query->where('rts_id', $rtId);
                 })->latest()->get();
-        } else {
-            $expenses = Expense::where('rts_id', $user->rt_id)
+        } 
+        // Jika Admin RT, hanya bisa melihat data sesuai RT-nya sendiri
+        else {
+            $expenses = Expense::where('rts_id', $user->rts_id)
                 ->with('category')
                 ->latest()
                 ->get();
         }
 
         $categories = Category::all();
-        $rts = RT::all();
+        $rts = RT::all(); // Ambil semua RT untuk dropdown filter (hanya untuk super_admin)
 
         return view('finance.index', compact('expenses', 'categories', 'rts'));
     }
@@ -43,7 +46,7 @@ class ExpenseController extends Controller
         ]);
 
         $user = auth()->user();
-        $rtId = $user->hasRole('super_admin') ? $request->input('rts_id') : $user->rt_id;
+        $rtId = $user->hasRole('super_admin') ? $request->input('rts_id') : $user->rts_id;
 
         Expense::create([
             'rt_id' => $rtId,
@@ -68,6 +71,12 @@ class ExpenseController extends Controller
         ]);
 
         $expense = Expense::findOrFail($id);
+
+        // Pastikan Admin RT hanya bisa update data miliknya
+        if (auth()->user()->hasRole('admin_rt') && $expense->rt_id != auth()->user()->rts_id) {
+            return redirect()->route('expense.index')->with('error', 'Anda tidak memiliki izin untuk mengubah pengeluaran ini.');
+        }
+
         $expense->update($request->all());
 
         return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil diperbarui.');
@@ -76,6 +85,12 @@ class ExpenseController extends Controller
     public function destroy($id)
     {
         $expense = Expense::findOrFail($id);
+
+        // Pastikan Admin RT hanya bisa menghapus data miliknya
+        if (auth()->user()->hasRole('admin_rt') && $expense->rt_id != auth()->user()->rts_id) {
+            return redirect()->route('expense.index')->with('error', 'Anda tidak memiliki izin untuk menghapus pengeluaran ini.');
+        }
+
         $expense->delete();
 
         return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil dihapus.');
