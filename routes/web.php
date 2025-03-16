@@ -61,3 +61,12 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Route untuk manajemen kategori
     Route::resource('categories', CategoryController::class)->except(['create', 'show']);
 });
+
+Route::middleware(['auth', 'role:admin_rt'])->group(function () {
+    Route::get('/dashboard/admin-rt', [AdminRTController::class, 'index'])->name('admin-rt.dashboard');
+
+    Route::resource('expenses-rt', ExpenseController::class);
+
+    Route::resource('incomes-rt', IncomeController::class);
+});
+
