@@ -22,10 +22,10 @@
             </li>
 
             <!-- Divider -->
-            <hr class="my-2 border-gray-300">
+            <hr class="my-3 border-gray-300">
 
             <!-- MENU KEUANGAN -->
-            <li class="text-xs font-semibold text-gray-500 px-4">KEUANGAN</li>
+            <li class="text-xs font-semibold text-gray-700 px-4 mt-2">KEUANGAN</li>
             <li>
                 <a href="{{ route('finance.index') }}" 
                     class="flex items-center gap-2 px-4 py-2 rounded-md 
@@ -46,16 +46,16 @@
             </li>
 
             <!-- Divider -->
-            <hr class="my-2 border-gray-300">
+            <hr class="my-3 border-gray-300">
 
             <!-- MENU MANAJEMEN -->
-            <li class="text-xs font-semibold text-gray-500 px-4">MANAJEMEN</li>
+            <li class="text-xs font-semibold text-gray-700 px-4 mt-2">MANAJEMEN</li>
             <li>
                 <a href="{{ route('categories.index') }}" 
                     class="flex items-center gap-2 px-4 py-2 rounded-md 
                         text-gray-700 hover:bg-gray-100 
                         {{ request()->routeIs('categories.index') ? 'bg-blue-100' : '' }}">
-                    <i class="bi bi-tags text-warning"></i>
+                    <i class="bi bi-folder text-warning"></i>
                     <span>Kategori</span>
                 </a>
             </li>
@@ -64,7 +64,7 @@
                     class="flex items-center gap-2 px-4 py-2 rounded-md 
                         text-gray-700 hover:bg-gray-100 
                         {{ request()->routeIs('rt.index') ? 'bg-blue-100' : '' }}">
-                    <i class="bi bi-tags text-warning"></i>
+                    <i class="bi bi-geo-alt text-primary"></i>
                     <span>RT</span>
                 </a>
             </li>
@@ -73,22 +73,22 @@
                     class="flex items-center gap-2 px-4 py-2 rounded-md 
                         text-gray-700 hover:bg-gray-100 
                         {{ request()->routeIs('admin-rt.index') ? 'bg-blue-100' : '' }}">
-                    <i class="bi bi-tags text-warning"></i>
+                    <i class="bi bi-person-badge text-secondary"></i>
                     <span>Akun Admin RT</span>
                 </a>
             </li>
 
             <!-- Divider -->
-            <hr class="my-2 border-gray-300">
+            <hr class="my-3 border-gray-300">
 
             <!-- MENU NOTIFIKASI -->
-            <li class="text-xs font-semibold text-gray-500 px-4">NOTIFIKASI</li>
+            <li class="text-xs font-semibold text-gray-700 px-4 mt-2">NOTIFIKASI</li>
             <li>
                 <a href="{{ route('contact_notifications.index') }}" 
                     class="flex items-center gap-2 px-4 py-2 rounded-md 
                         text-gray-700 hover:bg-gray-100 
                         {{ request()->routeIs('contact_notifications.*') ? 'bg-blue-100' : '' }}">
-                    <i class="bi bi-people-fill text-info"></i>
+                    <i class="bi bi-bell-fill text-info"></i>
                     <span>Data User</span>
                 </a>
             </li>

@@ -1,6 +1,6 @@
 <nav class="fixed top-0 left-64 right-0 h-16 flex justify-between items-center bg-white border-b shadow-md px-6 z-40">
     <div>
-        <h6 class="font-semibold text-gray-800">{{ auth()->user()->name }}</h6>
+        <h6 class="font-semibold text-gray-800">Halo, {{ auth()->user()->name }}!</h6>
     </div>
     
     <ul class="flex items-center space-x-4">
