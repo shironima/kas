@@ -20,31 +20,19 @@ class RTController extends Controller
             'name' => 'required|unique:rts,name',
             'head_name' => 'required',
             'head_contact' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6'
         ]);
 
-        // Simpan RT
-        $rts = RT::create($request->only(['name', 'head_name', 'head_contact']));
-
-        // Buat akun admin_rt
-        User::create([
-            'name' => $request->head_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin_rt',
-            'rts_id' => $rts->id,
-        ]);
-
-        return redirect()->route('rt.index')->with('success', 'RT successfully added.');
-    }
+        RT::create($request->only(['name', 'head_name', 'head_contact']));
+    
+        return redirect()->route('rt.index')->with('success', 'RT berhasil ditambahkan.');
+    }    
 
     public function update(Request $request, RT $rt) {
         $request->validate([
             'name' => 'required|unique:rts,name,' . $rt->id,
             'head_name' => 'required',
             'head_contact' => 'required',
-            'email' => 'required|email|unique:users,email,' . optional($rt->adminRT)->id, // Mencegah error jika adminRT belum ada
+            'email' => 'required|email|unique:users,email,' . optional($rt->adminRT)->id,
         ]);
 
         $rt->update($request->only(['name', 'head_name', 'head_contact']));

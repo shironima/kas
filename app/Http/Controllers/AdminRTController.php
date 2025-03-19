@@ -41,7 +41,7 @@ class AdminRTController extends Controller
             'rts_id' => $request->rts_id,
         ]);
 
-        $user->assignRole('admin_rt'); // Otomatis beri role admin_rt
+        $user->assignRole('admin_rt');
 
         return redirect()->route('admin-rt.index')->with('success', 'Akun Admin RT berhasil dibuat.');
     }

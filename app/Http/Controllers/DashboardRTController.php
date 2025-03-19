@@ -2,30 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Income;
 use App\Models\Expense;
+use Illuminate\Support\Facades\Auth;
+use App\Models\RT;
 
 class DashboardRTController extends Controller
 {
     public function index()
     {
-        // Ambil total pemasukan & pengeluaran
-        $totalIncome = Income::sum('amount');
-        $totalExpense = Expense::sum('amount');
+        $adminRT = Auth::user();
+        $rtsId = $adminRT->rts_id;
+        
+        if (!$rtsId) {
+            return redirect()->route('home')->with('error', 'Anda belum terhubung dengan RT mana pun.');
+        }
 
-        // Ambil data pemasukan & pengeluaran untuk chart (group by bulan)
-        $monthlyIncome = Income::selectRaw('MONTH(created_at) as month, SUM(amount) as total')
+        $rt = RT::find($rtsId);
+        $rtName = $rt ? $rt->name : 'RT Tidak Ditemukan';
+
+        $totalIncome = Income::where('rts_id', $rtsId)->sum('amount');
+        $totalExpense = Expense::where('rts_id', $rtsId)->sum('amount');
+
+        $monthlyIncome = Income::where('rts_id', $rtsId)
+            ->selectRaw('MONTH(created_at) as month, SUM(amount) as total')
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month');
 
-        $monthlyExpense = Expense::selectRaw('MONTH(created_at) as month, SUM(amount) as total')
+        $monthlyExpense = Expense::where('rts_id', $rtsId)
+            ->selectRaw('MONTH(created_at) as month, SUM(amount) as total')
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month');
 
-        return view('dashboard-rt', compact('totalIncome', 'totalExpense', 'monthlyIncome', 'monthlyExpense'));
+        $latestTransactions = collect()
+            ->merge(Income::where('rts_id', $rtsId)->latest()->limit(5)->get()->map->setAttribute('type', 'income'))
+            ->merge(Expense::where('rts_id', $rtsId)->latest()->limit(5)->get()->map->setAttribute('type', 'expense'))
+            ->sortByDesc('created_at');
+
+        return view('dashboard-rt', compact(
+            'rtsId', 'rtName', 'totalIncome', 'totalExpense', 
+            'monthlyIncome', 'monthlyExpense', 'latestTransactions'
+        ));
     }
 }

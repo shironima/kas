@@ -9,10 +9,22 @@ use App\Models\Category;
 
 class IncomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user(); 
         $categories = Category::all(); 
+
+        // Ambil bulan dan tahun dari request (jika ada)
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        // Query dengan filter
+        $query = Income::where('rts_id', $user->rts_id);
+
+        if ($month && $year) {
+            $query->whereYear('transaction_date', $year)
+                ->whereMonth('transaction_date', $month);
+        }
 
         $incomes = Income::where('rts_id', $user->rts_id)->latest()->get(); 
     

@@ -46,10 +46,10 @@ Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(fu
         Route::get('/export/pdf', [FinanceController::class, 'exportPdf'])->name('finance.report.pdf');
     });
 
-    // Route untuk manajemen RT
+    // Route untuk manajemen RT -> bikin data tentang RT
     Route::resource('rt', RTController::class)->except(['show', 'create', 'edit']);
 
-    // Route untuk manajemen akun role : admin_rt
+    // Route untuk manajemen akun role : admin_rt (CRUD akun admin RT)
     Route::resource('admin-rt', AdminRTController::class);
     Route::get('/admin-rt/data', [AdminRTController::class, 'getData'])->name('admin-rt.data');
 
