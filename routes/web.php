@@ -11,6 +11,7 @@ use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\AdminRTController;
+use App\Http\Controllers\DashboardRTController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -26,7 +27,7 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkReques
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 // Protected Routes
-Route::middleware(['auth', 'role:super_admin'])->group(function () {
+Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -34,12 +35,6 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     // Route untuk manajemen contact notifications
     Route::resource('contact_notifications', ContactNotificationController::class)->except(['create', 'show']);
     Route::put('/contact_notifications/{id}/toggle', [ContactNotificationController::class, 'toggleNotification'])->name('contact_notifications.toggle');
-
-    // Route untuk manajemen pemasukan
-    Route::resource('income', IncomeController::class)->except(['create', 'show']);
-
-    // Route untuk manajemen pengeluaran
-    Route::resource('expense', ExpenseController::class)->except(['create', 'show']);
 
     // Route untuk manajemen keuangan
     Route::resource('finance', FinanceController::class)->except(['create', 'show']);
@@ -62,13 +57,11 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
     Route::resource('categories', CategoryController::class)->except(['create', 'show']);
 });
 
-Route::middleware(['auth', 'role:admin_rt'])->group(function () {
-    Route::get('/dashboard-rt', function () {
-        return view('dashboard-rt');
-    })->name('dashboardRT');
+Route::prefix('admin-rt')->middleware(['auth', 'role:admin_rt'])->group(function () {
+    Route::get('/dashboard', [DashboardRTController::class, 'index'])->name('dashboardRT');
 
-    Route::resource('expenses-rt', ExpenseController::class);
+    Route::resource('expenses', ExpenseController::class);
 
-    Route::resource('incomes-rt', IncomeController::class);
+    Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
 });
 

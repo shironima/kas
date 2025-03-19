@@ -9,7 +9,14 @@ class Income extends Model
 {
     use HasFactory;
     protected $table = 'incomes';
-    protected $fillable = ['category_id', 'name', 'amount', 'description', 'transaction_date'];
+    protected $fillable = [
+        'category_id', 
+        'name', 
+        'amount', 
+        'description', 
+        'transaction_date',
+        'rts_id',
+    ];
 
     public function category()
     {
