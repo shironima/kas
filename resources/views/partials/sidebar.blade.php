@@ -114,7 +114,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" 
+                    <a href="{{ route('expenses.index') }}" 
                         class="flex items-center gap-2 px-4 py-2 rounded-md 
                             text-gray-700 hover:bg-gray-100">
                         <i class="bi bi-cart-dash text-danger"></i>

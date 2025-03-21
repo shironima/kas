@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
-    }, 500); // Delay 500ms agar elemen benar-benar ter-load
+    }, 500);
 });
 </script>
 @endsection

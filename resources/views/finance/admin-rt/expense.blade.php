@@ -5,12 +5,12 @@
     <!-- Ringkasan Keuangan -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @php
-            $totalIncome = $incomes->sum('amount');
+            $totalExpense = $expenses->sum('amount');
             $totalBalance = $totalIncome - $totalExpense;
         @endphp
 
         @foreach([
-            ['title' => 'Total Pendapatan', 'amount' => $totalIncome, 'color' => 'bg-green-400'],
+            ['title' => 'Total Pengeluaran', 'amount' => $totalExpense, 'color' => 'bg-red-400'],
             ['title' => 'Total Saldo', 'amount' => $totalBalance, 'color' => 'bg-blue-400']
         ] as $card)
             <div class="{{ $card['color'] }} shadow-xl text-white p-6 rounded-lg flex flex-col items-center">
@@ -20,16 +20,16 @@
         @endforeach
     </div>
 
-    <!-- Tombol Tambah Pendapatan -->
-    <button onclick="openModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-md mt-4">
-        + Tambah Pendapatan
+    <!-- Tombol Tambah Pengeluaran -->
+    <button onclick="openModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-md mt-4">
+        + Tambah Pengeluaran
     </button>
 
-    <!-- Tabel Pendapatan -->
+    <!-- Tabel Pengeluaran -->
     <div class="mt-4 w-full">
         <div class="bg-white shadow-md rounded-lg p-6">
             <div class="overflow-x-auto">
-                <table id="incomeTable" class="w-full border border-gray-300">
+                <table id="expenseTable" class="w-full border border-gray-300">
                     <thead>
                         <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Nama</th>
@@ -40,13 +40,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($incomes as $income)
+                        @foreach ($expenses as $expense)
                             <tr>
-                                <td class="py-3 px-6">{{ $income->name }}</td>
-                                <td class="py-3 px-6">{{ $income->category->name ?? '-' }}</td>
-                                <td class="py-3 px-6">Rp{{ number_format($income->amount, 0, ',', '.') }}</td>
-                                <td class="py-3 px-6">{{ date('d M Y', strtotime($income->transaction_date)) }}</td>
-                                <td class="py-3 px-6">{{ $income->description ?? '-' }}</td>
+                                <td class="py-3 px-6">{{ $expense->name }}</td>
+                                <td class="py-3 px-6">{{ $expense->category->name ?? '-' }}</td>
+                                <td class="py-3 px-6">Rp{{ number_format($expense->amount, 0, ',', '.') }}</td>
+                                <td class="py-3 px-6">{{ date('d M Y', strtotime($expense->transaction_date)) }}</td>
+                                <td class="py-3 px-6">{{ $expense->description ?? '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -56,14 +56,14 @@
     </div>
 </div>
 
-<!-- Modal Tambah Pendapatan -->
-<div id="addIncomeModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+<!-- Modal Tambah Pengeluaran -->
+<div id="addExpenseModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-96">
         <div class="flex justify-between items-center border-b pb-2">
-            <h5 class="text-lg font-semibold text-gray-700">Tambah Pendapatan</h5>
+            <h5 class="text-lg font-semibold text-gray-700">Tambah Pengeluaran</h5>
             <button onclick="closeModal()" class="text-gray-600 hover:text-gray-800">&times;</button>
         </div>
-        <form id="addIncomeForm" method="POST">
+        <form id="addExpenseForm" method="POST">
             @csrf
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700">Nama</label>
@@ -93,7 +93,7 @@
             <div class="text-red-500 text-sm hidden" id="errorMessage"></div>
             <div class="flex justify-end space-x-2">
                 <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Simpan</button>
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Simpan</button>
             </div>
         </form>
     </div>
@@ -106,7 +106,7 @@
 
 <script>
 $(document).ready(function() {
-    $('#incomeTable').DataTable({
+    $('#expenseTable').DataTable({
         "scrollX": false,
         "autoWidth": false,
         "responsive": true,
@@ -120,14 +120,14 @@ $(document).ready(function() {
     });
 });
 
-// Fungsi untuk membuka modal tambah pendapatan
+// Fungsi untuk membuka modal tambah pengeluaran
 function openModal() {
-    document.getElementById('addIncomeModal').classList.remove('hidden');
+    document.getElementById('addExpenseModal').classList.remove('hidden');
 }
 
-// Fungsi untuk menutup modal tambah pendapatan
+// Fungsi untuk menutup modal tambah pengeluaran
 function closeModal() {
-    document.getElementById('addIncomeModal').classList.add('hidden');
+    document.getElementById('addExpenseModal').classList.add('hidden');
     document.getElementById('errorMessage').classList.add('hidden');
 }
 </script>

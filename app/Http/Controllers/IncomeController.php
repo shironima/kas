@@ -4,21 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Income;
-
+use App\Models\Expense;
 use App\Models\Category;
 
 class IncomeController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user(); 
-        $categories = Category::all(); 
+        $user = auth()->user();
+        $categories = Category::all();
 
         // Ambil bulan dan tahun dari request (jika ada)
         $month = $request->input('month');
         $year = $request->input('year');
 
-        // Query dengan filter
+        // Query pemasukan dengan filter RT dan tanggal jika ada
         $query = Income::where('rts_id', $user->rts_id);
 
         if ($month && $year) {
@@ -26,9 +26,14 @@ class IncomeController extends Controller
                 ->whereMonth('transaction_date', $month);
         }
 
-        $incomes = Income::where('rts_id', $user->rts_id)->latest()->get(); 
-    
-        return view('finance.admin-rt.income', compact('incomes', 'categories'));
+        $incomes = $query->latest()->get();
+        $totalIncome = $incomes->sum('amount');
+
+        // Hitung total saldo (Total pemasukan - Total pengeluaran)
+        $totalExpense = Expense::where('rts_id', $user->rts_id)->sum('amount');
+        $totalBalance = $totalIncome - $totalExpense;
+
+        return view('finance.admin-rt.income', compact('incomes', 'categories', 'totalIncome', 'totalBalance', 'totalExpense'));
     }
 
     public function store(Request $request)

@@ -4,95 +4,92 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Expense;
+use App\Models\Income;
 use App\Models\Category;
-use App\Models\RT;
 
 class ExpenseController extends Controller
 {
     public function index(Request $request)
     {
         $user = auth()->user();
-        $rtId = $request->input('rts_id');
+        $categories = Category::all();
 
-        // Jika Super Admin, bisa melihat semua data dan filter berdasarkan RT
-        if ($user->hasRole('super_admin')) {
-            $expenses = Expense::with('category', 'rt')
-                ->when($rtId, function ($query) use ($rtId) {
-                    return $query->where('rts_id', $rtId);
-                })->latest()->get();
-        } 
-        // Jika Admin RT, hanya bisa melihat data sesuai RT-nya sendiri
-        else {
-            $expenses = Expense::where('rts_id', $user->rts_id)
-                ->with('category')
-                ->latest()
-                ->get();
+        // Ambil bulan dan tahun dari request (jika ada)
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        // Query pengeluaran dengan filter RT dan tanggal jika ada
+        $query = Expense::where('rts_id', $user->rts_id);
+
+        if ($month && $year) {
+            $query->whereYear('transaction_date', $year)
+                ->whereMonth('transaction_date', $month);
         }
 
-        $categories = Category::all();
-        $rts = RT::all(); // Ambil semua RT untuk dropdown filter (hanya untuk super_admin)
+        $expenses = $query->latest()->get();
+        $totalExpense = $expenses->sum('amount'); // Total pengeluaran
 
-        return view('finance.index', compact('expenses', 'categories', 'rts'));
+        // Hitung total saldo (Total pemasukan - Total pengeluaran)
+        $totalIncome = Income::where('rts_id', $user->rts_id)->sum('amount');
+        $totalBalance = $totalIncome - $totalExpense;
+
+        return view('finance.admin-rt.expense', compact('expenses', 'categories', 'totalExpense', 'totalBalance', 'totalIncome'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string',
-            'amount' => 'required|numeric',
-            'description' => 'nullable|string',
+            'amount' => 'required|numeric|min:0',
             'transaction_date' => 'required|date',
+            'description' => 'nullable|string',
         ]);
 
+        // Ambil user yang sedang login
         $user = auth()->user();
-        $rtId = $user->hasRole('super_admin') ? $request->input('rts_id') : $user->rts_id;
 
+        // Pastikan user punya rts_id
+        if (!$user->rts_id) {
+            return redirect()->back()->with('error', 'RT belum terdaftar untuk akun ini!');
+        }
+
+        // Tambahkan rts_id dari user yang sedang login
         Expense::create([
-            'rt_id' => $rtId,
-            'category_id' => $request->category_id,
             'name' => $request->name,
+            'category_id' => $request->category_id,
             'amount' => $request->amount,
-            'description' => $request->description,
             'transaction_date' => $request->transaction_date,
+            'description' => $request->description,
+            'rts_id' => $user->rts_id,
         ]);
 
-        return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil ditambahkan.');
+        return redirect()->route('expenses.index')->with('success', 'Pengeluaran berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
             'transaction_date' => 'required|date',
         ]);
 
-        $expense = Expense::findOrFail($id);
+        // Pastikan hanya mengupdate data dari RT yang sesuai
+        $expense = Expense::where('id', $id)->where('rts_id', auth()->user()->rts_id)->firstOrFail();
+        $expense->update($request->only(['name', 'category_id', 'amount', 'description', 'transaction_date']));
 
-        // Pastikan Admin RT hanya bisa update data miliknya
-        if (auth()->user()->hasRole('admin_rt') && $expense->rt_id != auth()->user()->rts_id) {
-            return redirect()->route('expense.index')->with('error', 'Anda tidak memiliki izin untuk mengubah pengeluaran ini.');
-        }
-
-        $expense->update($request->all());
-
-        return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil diperbarui.');
+        return redirect()->route('expenses.index')->with('success', 'Data pengeluaran berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        $expense = Expense::findOrFail($id);
-
-        // Pastikan Admin RT hanya bisa menghapus data miliknya
-        if (auth()->user()->hasRole('admin_rt') && $expense->rt_id != auth()->user()->rts_id) {
-            return redirect()->route('expense.index')->with('error', 'Anda tidak memiliki izin untuk menghapus pengeluaran ini.');
-        }
-
+        // Pastikan hanya menghapus data dari RT yang sesuai
+        $expense = Expense::where('id', $id)->where('rts_id', auth()->user()->rts_id)->firstOrFail();
         $expense->delete();
 
-        return redirect()->route('expense.index')->with('success', 'Pengeluaran berhasil dihapus.');
+        return redirect()->route('expenses.index')->with('success', 'Data pengeluaran berhasil dihapus!');
     }
 }
