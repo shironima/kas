@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     @stack('styles')
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 <body class="bg-gray-100 flex min-h-screen">
 

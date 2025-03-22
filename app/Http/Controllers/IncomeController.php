@@ -29,11 +29,14 @@ class IncomeController extends Controller
         $incomes = $query->latest()->get();
         $totalIncome = $incomes->sum('amount');
 
-        // Hitung total saldo (Total pemasukan - Total pengeluaran)
-        $totalExpense = Expense::where('rts_id', $user->rts_id)->sum('amount');
+        // Ambil semua data pengeluaran untuk RT ini
+        $expenses = Expense::where('rts_id', $user->rts_id)->latest()->get();
+        $totalExpense = $expenses->sum('amount'); // Gunakan $expenses untuk perhitungan
+
+        // Hitung total saldo
         $totalBalance = $totalIncome - $totalExpense;
 
-        return view('finance.admin-rt.income', compact('incomes', 'categories', 'totalIncome', 'totalBalance', 'totalExpense'));
+        return view('finance.admin-rt.income', compact('incomes', 'expenses', 'categories', 'totalIncome', 'totalBalance', 'totalExpense'));
     }
 
     public function store(Request $request)
@@ -67,6 +70,15 @@ class IncomeController extends Controller
         return redirect()->route('incomes.index')->with('success', 'Pemasukan berhasil ditambahkan!');
     }
 
+    public function edit($id)
+    {
+        $income = Income::where('id', $id)
+                        ->where('rts_id', auth()->user()->rts_id)
+                        ->firstOrFail();
+
+        return response()->json($income); // Jika menggunakan modal AJAX
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -81,7 +93,7 @@ class IncomeController extends Controller
         $income = Income::where('id', $id)->where('rts_id', auth()->user()->rts_id)->firstOrFail();
         $income->update($request->only(['name', 'category_id', 'amount', 'description', 'transaction_date']));
 
-        return redirect()->route('income.index')->with('success', 'Data pemasukan berhasil diperbarui!');
+        return redirect()->route('incomes.index')->with('success', 'Data pemasukan berhasil diperbarui!');
     }
 
     public function destroy($id)
@@ -90,6 +102,6 @@ class IncomeController extends Controller
         $income = Income::where('id', $id)->where('rts_id', auth()->user()->rts_id)->firstOrFail();
         $income->delete();
 
-        return redirect()->route('income.index')->with('success', 'Data pemasukan berhasil dihapus!');
+        return response()->json(['success' => true, 'message' => 'Data pemasukan berhasil dihapus!']);
     }
 }

@@ -62,6 +62,6 @@ Route::prefix('admin-rt')->middleware(['auth', 'role:admin_rt'])->group(function
 
     Route::resource('expenses', ExpenseController::class);
 
-    Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
+    Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 });
 
