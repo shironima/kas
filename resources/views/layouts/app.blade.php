@@ -73,6 +73,10 @@
         });
     </script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom JS -->
     @stack('scripts')
 
 </body>
