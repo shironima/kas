@@ -60,7 +60,7 @@ Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(fu
 Route::prefix('admin-rt')->middleware(['auth', 'role:admin_rt'])->group(function () {
     Route::get('/dashboard', [DashboardRTController::class, 'index'])->name('dashboardRT');
 
-    Route::resource('expenses', ExpenseController::class);
+    Route::resource('expenses', ExpenseController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
     Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 });

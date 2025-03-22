@@ -2,10 +2,12 @@
 
 @section('content')
 <div class="container mx-auto p-6">
+
     <!-- Ringkasan Keuangan -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @php
-            $totalExpense = $expenses->sum('amount');
+            $totalIncome = $incomes->sum('amount');
+            $totalExpense = $expenses->sum('amount') ?? 0;
             $totalBalance = $totalIncome - $totalExpense;
         @endphp
 
@@ -21,7 +23,7 @@
     </div>
 
     <!-- Tombol Tambah Pengeluaran -->
-    <button onclick="openModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-md mt-4">
+    <button onclick="toggleModal('addExpenseModal')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-md mt-4">
         + Tambah Pengeluaran
     </button>
 
@@ -37,6 +39,7 @@
                             <th class="py-3 px-6 text-left">Jumlah</th>
                             <th class="py-3 px-6 text-left">Tanggal</th>
                             <th class="py-3 px-6 text-left">Deskripsi</th>
+                            <th class="py-3 px-6 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,6 +50,10 @@
                                 <td class="py-3 px-6">Rp{{ number_format($expense->amount, 0, ',', '.') }}</td>
                                 <td class="py-3 px-6">{{ date('d M Y', strtotime($expense->transaction_date)) }}</td>
                                 <td class="py-3 px-6">{{ $expense->description ?? '-' }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    <button onclick='editExpense(@json($expense))' class="bg-yellow-500 text-white px-2 py-1 rounded-md">Edit</button>
+                                    <button onclick="deleteExpense({{ $expense->id }})" class="bg-red-500 text-white px-2 py-1 rounded-md">Hapus</button>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -57,79 +64,91 @@
 </div>
 
 <!-- Modal Tambah Pengeluaran -->
-<div id="addExpenseModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <div class="flex justify-between items-center border-b pb-2">
-            <h5 class="text-lg font-semibold text-gray-700">Tambah Pengeluaran</h5>
-            <button onclick="closeModal()" class="text-gray-600 hover:text-gray-800">&times;</button>
-        </div>
-        <form id="addExpenseForm" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Nama</label>
-                <input type="text" name="name" class="w-full border p-2 rounded-md" required>
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Kategori</label>
-                <select name="category_id" class="w-full border p-2 rounded-md" required>
-                    <option value="">Pilih Kategori</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Jumlah</label>
-                <input type="number" name="amount" class="w-full border p-2 rounded-md" required>
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-                <input type="date" name="transaction_date" class="w-full border p-2 rounded-md" required>
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                <textarea name="description" class="w-full border p-2 rounded-md"></textarea>
-            </div>
-            <div class="text-red-500 text-sm hidden" id="errorMessage"></div>
-            <div class="flex justify-end space-x-2">
-                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Simpan</button>
-            </div>
-        </form>
-    </div>
-</div>
+@include('finance.admin-rt.partials.expense-modal', ['modalId' => 'addExpenseModal', 'action' => route('expenses.store'), 'method' => 'POST'])
+
+<!-- Modal Edit Pengeluaran -->
+@include('finance.admin-rt.partials.expense-modal', ['modalId' => 'editExpenseModal', 'action' => '', 'method' => 'PUT'])
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-$(document).ready(function() {
-    $('#expenseTable').DataTable({
-        "scrollX": false,
-        "autoWidth": false,
-        "responsive": true,
-        "columns": [
-            { "data": 0 }, // Nama
-            { "data": 1 }, // Kategori
-            { "data": 2 }, // Jumlah
-            { "data": 3 }, // Tanggal
-            { "data": 4 }  // Deskripsi
-        ]
-    });
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.getElementById("expenseTable")) {
+        new DataTable("#expenseTable");
+    }
+
+    window.toggleModal = function(modalId) {
+        document.getElementById(modalId).classList.toggle("hidden");
+    }
+
+    window.editExpense = function(expense) {
+        const editForm = document.querySelector("#editExpenseModal form");
+        if (!editForm) {
+            console.error("Form Edit tidak ditemukan!");
+            return;
+        }
+
+        editForm.setAttribute("action", `/admin-rt/expenses/${expense.id}`);
+        editForm.querySelector("input[name='name']").value = expense.name;
+        editForm.querySelector("select[name='category_id']").value = expense.category_id || "";
+        editForm.querySelector("input[name='amount']").value = expense.amount;
+        editForm.querySelector("input[name='transaction_date']").value = expense.transaction_date;
+        editForm.querySelector("textarea[name='description']").value = expense.description || "";
+        
+        toggleModal("editExpenseModal");
+    }
+
+    window.deleteExpense = function (id) {
+        Swal.fire({
+            title: "Yakin ingin menghapus?",
+            text: "Data yang dihapus tidak bisa dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin-rt/expenses/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ _token: document.querySelector('meta[name="csrf-token"]').content })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert("success", "Pengeluaran berhasil dihapus!");
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showAlert("error", "Gagal menghapus pengeluaran.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Kesalahan:", error);
+                    showAlert("error", "Terjadi kesalahan pada server.");
+                });
+            }
+        });
+    }
+
+    function showAlert(type, message) {
+        Swal.fire({
+            title: type === "success" ? "Berhasil!" : "Gagal!",
+            text: message,
+            icon: type,
+            timer: 3000,
+            showConfirmButton: false
+        });
+    }
 });
-
-// Fungsi untuk membuka modal tambah pengeluaran
-function openModal() {
-    document.getElementById('addExpenseModal').classList.remove('hidden');
-}
-
-// Fungsi untuk menutup modal tambah pengeluaran
-function closeModal() {
-    document.getElementById('addExpenseModal').classList.add('hidden');
-    document.getElementById('errorMessage').classList.add('hidden');
-}
 </script>
 @endpush
+
 @endsection

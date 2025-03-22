@@ -27,13 +27,16 @@ class ExpenseController extends Controller
         }
 
         $expenses = $query->latest()->get();
-        $totalExpense = $expenses->sum('amount'); // Total pengeluaran
+        $totalExpense = $expenses->sum('amount');
 
-        // Hitung total saldo (Total pemasukan - Total pengeluaran)
-        $totalIncome = Income::where('rts_id', $user->rts_id)->sum('amount');
+        // Ambil semua data pemasukan untuk RT ini
+        $incomes = Income::where('rts_id', $user->rts_id)->latest()->get();
+        $totalIncome = $incomes->sum('amount');
+
+        // Hitung total saldo
         $totalBalance = $totalIncome - $totalExpense;
 
-        return view('finance.admin-rt.expense', compact('expenses', 'categories', 'totalExpense', 'totalBalance', 'totalIncome'));
+        return view('finance.admin-rt.expense', compact('expenses', 'incomes', 'categories', 'totalExpense', 'totalBalance', 'totalIncome'));
     }
 
     public function store(Request $request)
@@ -63,8 +66,17 @@ class ExpenseController extends Controller
             'description' => $request->description,
             'rts_id' => $user->rts_id,
         ]);
-
+        
         return redirect()->route('expenses.index')->with('success', 'Pengeluaran berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $expense = Expense::where('id', $id)
+                          ->where('rts_id', auth()->user()->rts_id)
+                          ->firstOrFail();
+
+        return response()->json($expense); // Jika menggunakan modal AJAX
     }
 
     public function update(Request $request, $id)
@@ -90,6 +102,6 @@ class ExpenseController extends Controller
         $expense = Expense::where('id', $id)->where('rts_id', auth()->user()->rts_id)->firstOrFail();
         $expense->delete();
 
-        return redirect()->route('expenses.index')->with('success', 'Data pengeluaran berhasil dihapus!');
+        return response()->json(['success' => true, 'message' => 'Data pengeluaran berhasil dihapus!']);
     }
 }
