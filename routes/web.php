@@ -12,6 +12,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\AdminRTController;
 use App\Http\Controllers\DashboardRTController;
+use App\Http\Controllers\TrashBinController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -60,7 +61,14 @@ Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(fu
 Route::prefix('admin-rt')->middleware(['auth', 'role:admin_rt'])->group(function () {
     Route::get('/dashboard', [DashboardRTController::class, 'index'])->name('dashboardRT');
 
+    Route::get('/trash-bin', [TrashBinController::class, 'index'])->name('trash-bin.index');
+    Route::patch('/restore/{type}/{id}', [TrashBinController::class, 'restore'])->name('trash-bin.restore');
+    Route::delete('/delete/{type}/{id}', [TrashBinController::class, 'forceDelete'])->name('trash-bin.forceDelete');
+
     Route::resource('expenses', ExpenseController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    Route::get('expenses/deleted', [ExpenseController::class, 'deleted'])->name('expenses.deleted'); // soft delete
+    Route::put('expenses/{id}/restore', [ExpenseController::class, 'restore'])->name('expenses.restore'); // restore
+    Route::delete('expenses/{id}/force-delete', [ExpenseController::class, 'forceDelete'])->name('expenses.forceDelete'); // force delete
 
     Route::resource('incomes', IncomeController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 });

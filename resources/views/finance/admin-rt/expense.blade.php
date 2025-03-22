@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
     window.deleteExpense = function (id) {
         Swal.fire({
             title: "Yakin ingin menghapus?",
-            text: "Data yang dihapus tidak bisa dikembalikan!",
+            text: "Data yang dihapus akan berada dalam sampah!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",

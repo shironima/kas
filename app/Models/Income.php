@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Income extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = 'incomes';
+    protected $dates = ['transaction_date'];
     protected $fillable = [
         'category_id', 
         'name', 

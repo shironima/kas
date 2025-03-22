@@ -96,12 +96,58 @@ class ExpenseController extends Controller
         return redirect()->route('expenses.index')->with('success', 'Data pengeluaran berhasil diperbarui!');
     }
 
+    /**
+     * Hapus dengan Soft Delete
+     */
     public function destroy($id)
     {
-        // Pastikan hanya menghapus data dari RT yang sesuai
-        $expense = Expense::where('id', $id)->where('rts_id', auth()->user()->rts_id)->firstOrFail();
-        $expense->delete();
+        $expense = Expense::where('id', $id)
+                          ->where('rts_id', auth()->user()->rts_id)
+                          ->firstOrFail();
+        $expense->delete(); // Soft delete
 
         return response()->json(['success' => true, 'message' => 'Data pengeluaran berhasil dihapus!']);
+    }
+
+    /**
+     * Menampilkan data yang sudah dihapus (Soft Deleted)
+     */
+    public function trashed()
+    {
+        $expenses = Expense::onlyTrashed()
+                            ->where('rts_id', auth()->user()->rts_id)
+                            ->get();
+
+        return view('finance.admin-rt.trashed-expense', compact('expenses'));
+    }
+
+    /**
+     * Mengembalikan Data yang Terhapus (Restore)
+     */
+    public function restore($id)
+    {
+        $expense = Expense::onlyTrashed()
+                          ->where('id', $id)
+                          ->where('rts_id', auth()->user()->rts_id)
+                          ->firstOrFail();
+
+        $expense->restore(); // Mengembalikan data
+
+        return redirect()->route('expenses.trashed')->with('success', 'Data berhasil dikembalikan!');
+    }
+
+    /**
+     * Menghapus Permanen Data (Force Delete)
+     */
+    public function forceDelete($id)
+    {
+        $expense = Expense::onlyTrashed()
+                          ->where('id', $id)
+                          ->where('rts_id', auth()->user()->rts_id)
+                          ->firstOrFail();
+
+        $expense->forceDelete(); // Hapus permanen
+
+        return redirect()->route('expenses.trashed')->with('success', 'Data berhasil dihapus secara permanen!');
     }
 }

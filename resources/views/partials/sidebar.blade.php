@@ -102,6 +102,23 @@
                     </a>
                 </li>
 
+                <!-- Divider -->
+                <hr class="my-3 border-gray-300">
+
+                <!-- MENU NOTIFIKASI -->
+                <li class="text-xs font-semibold text-gray-700 px-4 mt-2">Lainnya</li>
+
+                <!-- MENU TRASH BIN -->
+                <li>
+                    <a href="{{ route('trash-bin.index') }}" 
+                        class="flex items-center gap-2 px-4 py-2 rounded-md 
+                            text-gray-700 hover:bg-gray-100 
+                            {{ request()->routeIs('trashbin.index') ? 'bg-blue-100' : '' }}">
+                        <i class="bi bi-trash text-danger"></i>
+                        <span>Sampah</span>
+                    </a>
+                </li
+
             @else
                 <!-- MENU ADMIN RT -->
                 <li class="text-xs font-semibold text-gray-700 px-4 mt-2">KEUANGAN</li>
@@ -141,6 +158,17 @@
                             text-gray-700 hover:bg-gray-100">
                         <i class="bi bi-calendar-event text-warning"></i>
                         <span>Log Kegiatan</span>
+                    </a>
+                </li>
+
+                <!-- MENU TRASH BIN -->
+                <li>
+                    <a href="{{ route('trash-bin.index') }}" 
+                        class="flex items-center gap-2 px-4 py-2 rounded-md 
+                            text-gray-700 hover:bg-gray-100 
+                            {{ request()->routeIs('trashbin.index') ? 'bg-blue-100' : '' }}">
+                        <i class="bi bi-trash text-danger"></i>
+                        <span>Sampah</span>
                     </a>
                 </li>
             @endif
