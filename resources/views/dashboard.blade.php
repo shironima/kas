@@ -54,7 +54,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach([
                 ['title' => 'Statistik Keuangan', 'desc' => 'Lihat ringkasan pemasukan dan pengeluaran kas RT.', 'route' => 'finance.index', 'icon' => 'bi-cash-stack', 'color' => 'blue'],
-                ['title' => 'Notifikasi', 'desc' => 'Kelola data kontak yang menerima notifikasi.', 'route' => 'contact_notifications.index', 'icon' => 'bi-people-fill', 'color' => 'green'],
+                ['title' => 'Admin RT', 'desc' => 'Kelola data Admin untuk tiap RT.', 'route' => 'admin-rt.index', 'icon' => 'bi-people-fill', 'color' => 'green'],
                 ['title' => 'Laporan Kegiatan', 'desc' => 'Pantau dan kelola keuangan di lingkungan RT Anda.', 'route' => 'finance.report.generate', 'icon' => 'bi-calendar-event', 'color' => 'yellow']
             ] as $menu)
                 <div class="bg-white shadow-md hover:shadow-lg transition p-6 rounded-xl flex flex-col items-center">

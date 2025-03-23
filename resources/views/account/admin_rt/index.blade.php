@@ -111,6 +111,8 @@
         <form id="editForm" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" id="editId" name="id">
+            
             <div class="mb-3">
                 <label class="block font-medium">Nama</label>
                 <input type="text" id="editName" name="name" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
@@ -161,6 +163,14 @@
         });
     });
 
+    function toggleModal(id) {
+        document.getElementById(id).classList.toggle('hidden');
+    }
+
+    function addAdminRT() {
+        toggleModal('addModal');
+    }
+
     function editAdminRT(button) {
         let id = button.getAttribute('data-id');
         let name = button.getAttribute('data-name');
@@ -171,7 +181,7 @@
         document.getElementById('editEmail').value = email;
         document.getElementById('editRT').value = rtId;
 
-        document.getElementById('editForm').action = "{{ url('admin-rt') }}/" + id;
+        document.getElementById('editForm').action = "{{ route('admin-rt.update', '') }}" + '/' + id;
 
         toggleModal('editModal');
     }
@@ -183,5 +193,6 @@
         }
     }
 </script>
+
 @endpush
 @endsection
