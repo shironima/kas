@@ -56,14 +56,44 @@ class RTController extends Controller
     }
 
     public function destroy(RT $rt) {
-        // Hapus admin_rt terkait jika ada
+        // Soft delete admin_rt terkait jika ada
         if ($rt->adminRT) {
             $rt->adminRT->delete();
         }
 
-        // Hapus RT
+        // Soft delete RT
         $rt->delete();
 
-        return redirect()->route('rt.index')->with('success', 'RT successfully deleted.');
+        return redirect()->route('rt.index')->with('success', 'RT berhasil dinonaktifkan.');
+    }
+
+    // Fungsi untuk mengembalikan RT yang sudah dihapus
+    public function restore($id)
+    {
+        $rt = RT::withTrashed()->findOrFail($id);
+        $rt->restore();
+
+        // Jika ada admin RT yang terkait, restore juga
+        if ($rt->adminRT()->withTrashed()->exists()) {
+            $rt->adminRT()->restore();
+        }
+
+        return redirect()->route('rt.index')->with('success', 'RT berhasil dikembalikan.');
+    }
+
+    // Fungsi untuk menghapus RT secara permanen
+    public function forceDelete($id)
+    {
+        $rt = RT::withTrashed()->findOrFail($id);
+
+        // Hapus permanen admin RT jika ada
+        if ($rt->adminRT()->withTrashed()->exists()) {
+            $rt->adminRT()->forceDelete();
+        }
+
+        // Hapus permanen RT
+        $rt->forceDelete();
+
+        return redirect()->route('rt.index')->with('success', 'RT berhasil dihapus secara permanen.');
     }
 }

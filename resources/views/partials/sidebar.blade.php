@@ -17,7 +17,7 @@
             <!-- DASHBOARD -->
             <li>
                 @if(auth()->user()->role === 'super_admin')
-                    <a href="{{ route('dashboard') }}" 
+                    <a href="{{ route('dashboard') }}"
                 @else
                     <a href="{{ route('dashboardRT') }}" 
                 @endif
@@ -105,19 +105,19 @@
                 <!-- Divider -->
                 <hr class="my-3 border-gray-300">
 
-                <!-- MENU NOTIFIKASI -->
-                <li class="text-xs font-semibold text-gray-700 px-4 mt-2">Lainnya</li>
+                <!-- MENU LAINNYA -->
+                <li class="text-xs font-semibold text-gray-700 px-4 mt-2">LAINNYA</li>
 
                 <!-- MENU TRASH BIN -->
                 <li>
-                    <a href="{{ route('trash-bin.index') }}" 
+                    <a href="{{ route('superadmin.trashbin.index') }}" 
                         class="flex items-center gap-2 px-4 py-2 rounded-md 
                             text-gray-700 hover:bg-gray-100 
                             {{ request()->routeIs('trashbin.index') ? 'bg-blue-100' : '' }}">
                         <i class="bi bi-trash text-danger"></i>
                         <span>Sampah</span>
                     </a>
-                </li
+                </li>
 
             @else
                 <!-- MENU ADMIN RT -->

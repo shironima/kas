@@ -10,7 +10,9 @@ class Income extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'incomes';
-    protected $dates = ['transaction_date'];
+    protected $dates = [
+        'transaction_date'
+    ];
     protected $fillable = [
         'category_id', 
         'name', 

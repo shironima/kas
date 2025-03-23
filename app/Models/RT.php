@@ -10,7 +10,10 @@ class RT extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'rts';
-    protected $dates = ['deleted_at'];
+    protected $primaryKey = 'id';
+    protected $dates = [
+        'deleted_at'
+    ];
     protected $fillable = [
         'name', 
         'head_name', 
@@ -19,7 +22,9 @@ class RT extends Model
 
     public function adminRT()
     {
-        return $this->hasOne(User::class, 'rts_id');
+        return $this->hasOne(User::class, 'rts_id')->whereHas('roles', function ($query) {
+            $query->where('name', 'admin_rt');
+        });
     }
     
 }

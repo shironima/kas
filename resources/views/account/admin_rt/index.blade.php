@@ -142,10 +142,24 @@
 </div>
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
-    function toggleModal(id) {
-        document.getElementById(id).classList.toggle('hidden');
-    }
+    $(document).ready(function() {
+        $('#adminRtTable').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: { first: "Pertama", last: "Terakhir", next: "›", previous: "‹" },
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoEmpty: "Tidak ada data yang tersedia",
+                infoFiltered: "(disaring dari _MAX_ total data)"
+            }
+        });
+    });
 
     function editAdminRT(button) {
         let id = button.getAttribute('data-id');

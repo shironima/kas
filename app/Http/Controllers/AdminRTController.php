@@ -73,7 +73,27 @@ class AdminRTController extends Controller
 
     public function destroy(User $admin_rt)
     {
+        // Soft delete admin RT
         $admin_rt->delete();
-        return redirect()->route('admin-rt.index')->with('success', 'Akun Admin RT berhasil dihapus.');
+
+        return redirect()->route('admin-rt.index')->with('success', 'Akun Admin RT berhasil dinonaktifkan (soft delete).');
+    }
+
+    // Fungsi untuk mengembalikan Admin RT yang sudah dihapus
+    public function restore($id)
+    {
+        $admin_rt = User::withTrashed()->findOrFail($id);
+        $admin_rt->restore();
+
+        return redirect()->route('admin-rt.index')->with('success', 'Akun Admin RT berhasil dikembalikan.');
+    }
+
+    // Fungsi untuk menghapus Admin RT secara permanen
+    public function forceDelete($id)
+    {
+        $admin_rt = User::withTrashed()->findOrFail($id);
+        $admin_rt->forceDelete();
+
+        return redirect()->route('admin-rt.index')->with('success', 'Akun Admin RT berhasil dihapus permanen.');
     }
 }

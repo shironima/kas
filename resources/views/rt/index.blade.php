@@ -126,15 +126,22 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1.js"></script>
-<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/2.2.2/js/dataTables.tailwindcss.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#rtTable').DataTable({
             responsive: true,
-            language: { search: "Cari RT:" }
+            autoWidth: false,
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: { first: "Pertama", last: "Terakhir", next: "›", previous: "‹" },
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoEmpty: "Tidak ada data yang tersedia",
+                infoFiltered: "(disaring dari _MAX_ total data)"
+            }
         });
     });
 

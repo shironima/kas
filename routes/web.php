@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactNotificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RTController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\AdminRTController;
 use App\Http\Controllers\DashboardRTController;
 use App\Http\Controllers\TrashBinController;
+use App\Http\Controllers\TrashBinSuperAdminController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -29,10 +31,12 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 
 // Protected Routes
 Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/trash-bin', [TrashBinSuperAdminController::class, 'index'])->name('superadmin.trashbin.index');
+    Route::patch('/trash-bin/restore/{type}/{id}', [TrashBinSuperAdminController::class, 'restore'])->name('superadmin.trashbin.restore');
+    Route::delete('/trash-bin/delete/{type}/{id}', [TrashBinSuperAdminController::class, 'forceDelete'])->name('superadmin.trashbin.forceDelete');
+    
     // Route untuk manajemen contact notifications
     Route::resource('contact_notifications', ContactNotificationController::class)->except(['create', 'show']);
     Route::put('/contact_notifications/{id}/toggle', [ContactNotificationController::class, 'toggleNotification'])->name('contact_notifications.toggle');

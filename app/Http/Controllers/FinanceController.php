@@ -18,42 +18,56 @@ class FinanceController extends Controller
     {
         $selectedRT = $request->rt_id; // Filter RT
         $selectedCategory = $request->category_id; // Filter Kategori
-        $tab = $request->tab ?? 'income'; // Default tab pemasukan
+        $tab = $request->tab ?? 'income'; // Default tab = pemasukan
 
-        // Query Pemasukan
-        $incomesQuery = Income::with('category', 'rt');
+        // Query Pemasukan (Income) hanya dari RT yang belum dihapus
+        $incomesQuery = Income::with(['category' => function ($query) {
+            $query->withTrashed(); // Ambil kategori termasuk yang sudah dihapus
+        }, 'rt'])
+            ->whereHas('rt', function ($query) {
+                $query->whereNull('deleted_at'); // Hanya ambil RT yang belum dihapus
+            });
+
         if ($selectedRT) {
             $incomesQuery->where('rts_id', $selectedRT);
         }
         if ($selectedCategory) {
             $incomesQuery->where('category_id', $selectedCategory);
         }
+
         $incomes = $incomesQuery->latest()->get();
         $totalIncome = $incomes->sum('amount');
 
-        // Query Pengeluaran
-        $expensesQuery = Expense::with('category', 'rt');
+        // Query Pengeluaran (Expense) hanya dari RT yang belum dihapus
+        $expensesQuery = Expense::with(['category' => function ($query) {
+            $query->withTrashed(); // Ambil kategori termasuk yang sudah dihapus
+        }, 'rt'])
+            ->whereHas('rt', function ($query) {
+                $query->whereNull('deleted_at'); // Hanya ambil RT yang belum dihapus
+            });
+
         if ($selectedRT) {
             $expensesQuery->where('rts_id', $selectedRT);
         }
         if ($selectedCategory) {
             $expensesQuery->where('category_id', $selectedCategory);
         }
+
         $expenses = $expensesQuery->latest()->get();
         $totalExpense = $expenses->sum('amount');
 
         // Hitung Total Saldo
         $totalBalance = $totalIncome - $totalExpense;
 
-        // Ambil daftar RT dan Kategori untuk dropdown
-        $rts = RT::all();
+        // Ambil daftar RT yang belum dihapus untuk dropdown filter
+        $rts = RT::whereNull('deleted_at')->get();
         $categories = Category::all();
 
         return view('finance.index', compact(
             'totalIncome', 'totalExpense', 'totalBalance', 'incomes', 'expenses',
             'rts', 'categories', 'selectedRT', 'selectedCategory', 'tab'
         ));
-    }
+}
 
     public function store(Request $request)
     {

@@ -10,7 +10,9 @@ class Expense extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'expenses';
-    protected $dates = ['deleted_at'];
+    protected $dates = [
+        'deleted_at'
+    ];
     protected $fillable = [
         'category_id', 
         'name', 
