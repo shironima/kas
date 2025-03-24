@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,12 +15,10 @@
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.tailwindcss.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     @stack('styles')
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
 </head>
 <body class="bg-gray-100 flex min-h-screen">
 
@@ -43,18 +41,16 @@
     </div>
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwindcss.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
     <!-- Inisialisasi DataTables -->
     <script>
         $(document).ready(function() {
             $('.datatable').DataTable({
                 responsive: true,
-                autoWidth: false,
                 language: {
                     search: "Cari:",
                     lengthMenu: "Tampilkan _MENU_ data",
@@ -70,6 +66,9 @@
             $(".dataTables_wrapper").addClass("mt-4");
             $(".dataTables_length").addClass("mb-4");
             $(".dataTables_filter input").addClass("rounded-lg p-2 border border-gray-300 focus:ring focus:ring-blue-300");
+            $(".dataTables_paginate").addClass("flex justify-center");
+            $(".dataTables_paginate .paginate_button").addClass("px-2 py-1 rounded-md mx-1");
+            $(".dataTable tbody tr").addClass("bg-white text-gray-800");
         });
     </script>
 

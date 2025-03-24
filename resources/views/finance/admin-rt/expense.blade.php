@@ -27,13 +27,13 @@
         + Tambah Pengeluaran
     </button>
 
-    <!-- Tabel Pengeluaran -->
+    <!-- Tabel Pengeluaran Tanpa DataTables -->
     <div class="mt-4 w-full">
         <div class="bg-white shadow-md rounded-lg p-6">
             <div class="overflow-x-auto">
-                <table id="expenseTable" class="w-full border border-gray-300">
+                <table id="RTExpense" class="w-full bg-white border border-gray-200 text-sm rounded-lg">
                     <thead>
-                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
                             <th class="py-3 px-6 text-left">Nama</th>
                             <th class="py-3 px-6 text-left">Kategori</th>
                             <th class="py-3 px-6 text-left">Jumlah</th>
@@ -44,7 +44,7 @@
                     </thead>
                     <tbody>
                         @foreach ($expenses as $expense)
-                            <tr>
+                            <tr class="border-b">
                                 <td class="py-3 px-6">{{ $expense->name }}</td>
                                 <td class="py-3 px-6">{{ $expense->category->name ?? '-' }}</td>
                                 <td class="py-3 px-6">Rp{{ number_format($expense->amount, 0, ',', '.') }}</td>
@@ -70,15 +70,26 @@
 @include('finance.admin-rt.partials.expense-modal', ['modalId' => 'editExpenseModal', 'action' => '', 'method' => 'PUT'])
 
 @push('scripts')
-<!-- SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    $(document).ready(function() {
+        $('#RTExpense').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: { first: "Pertama", last: "Terakhir", next: "›", previous: "‹" },
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoEmpty: "Tidak ada data yang tersedia",
+                infoFiltered: "(disaring dari _MAX_ total data)"
+            }
+        });
+    });
+</script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
-    if (document.getElementById("expenseTable")) {
-        new DataTable("#expenseTable");
-    }
-
     window.toggleModal = function(modalId) {
         document.getElementById(modalId).classList.toggle("hidden");
     }
