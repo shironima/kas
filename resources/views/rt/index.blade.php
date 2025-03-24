@@ -102,7 +102,7 @@
 <div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white w-1/3 p-6 rounded-lg shadow-lg">
         <h5 class="text-lg font-semibold mb-4">Edit RT</h5>
-        <form id="editForm" method="POST">
+        <form id="editForm" method="POST" action="">
             @csrf
             @method('PATCH')
             <div class="mb-3">
@@ -153,7 +153,7 @@
         $('#editRTName').val(name);
         $('#editRTHead').val(head);
         $('#editRTContact').val(contact);
-        $('#editForm').attr('action', "{{ url('rt') }}/" + id);
+        $('#editForm').attr('action', "{{ route('rt.update', '') }}/" + id);
         toggleModal('editModal');
     }
 
