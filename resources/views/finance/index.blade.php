@@ -74,7 +74,7 @@
                 @endif
             </div>
         </div>
- iv>
+    </div>
 </div>
 
 @push('scripts')

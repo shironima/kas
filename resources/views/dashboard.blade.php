@@ -55,7 +55,7 @@
             @foreach([
                 ['title' => 'Statistik Keuangan', 'desc' => 'Lihat ringkasan pemasukan dan pengeluaran kas RT.', 'route' => 'finance.index', 'icon' => 'bi-cash-stack', 'color' => 'blue'],
                 ['title' => 'Admin RT', 'desc' => 'Kelola data Admin untuk tiap RT.', 'route' => 'admin-rt.index', 'icon' => 'bi-people-fill', 'color' => 'green'],
-                ['title' => 'Laporan Kegiatan', 'desc' => 'Pantau dan kelola keuangan di lingkungan RT Anda.', 'route' => 'finance.report.generate', 'icon' => 'bi-calendar-event', 'color' => 'yellow']
+                ['title' => 'Laporan Keuangan', 'desc' => 'Print atau download laporan keuangan RT.', 'route' => 'report.index', 'icon' => 'bi-calendar-event', 'color' => 'yellow']
             ] as $menu)
                 <div class="bg-white shadow-md hover:shadow-lg transition p-6 rounded-xl flex flex-col items-center">
                     <div class="bg-{{ $menu['color'] }}-100 p-4 rounded-full">

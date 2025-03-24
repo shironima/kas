@@ -45,7 +45,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('finance.report.generate') }}" 
+                    <a href="{{ route('report.index') }}" 
                         class="flex items-center gap-2 px-4 py-2 rounded-md 
                             text-gray-700 hover:bg-gray-100 
                             {{ request()->routeIs('finance.report.generate') ? 'bg-blue-100' : '' }}">
@@ -87,10 +87,7 @@
                     </a>
                 </li>
 
-                <!-- Divider -->
-                <hr class="my-3 border-gray-300">
-
-                <!-- MENU NOTIFIKASI -->
+                <!-- <hr class="my-3 border-gray-300">
                 <li class="text-xs font-semibold text-gray-700 px-4 mt-2">NOTIFIKASI</li>
                 <li>
                     <a href="{{ route('contact_notifications.index') }}" 
@@ -100,7 +97,7 @@
                         <i class="bi bi-bell-fill text-info"></i>
                         <span>Data User</span>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- Divider -->
                 <hr class="my-3 border-gray-300">

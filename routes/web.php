@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ContactNotificationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RTController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\IncomeController;
@@ -45,10 +46,14 @@ Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(fu
     Route::resource('finance', FinanceController::class)->except(['create', 'show']);
 
     // Route untuk laporan keuangan (filter & eksport)
-    Route::prefix('finance/reports')->group(function () {
-        Route::get('/', [FinanceController::class, 'generateReport'])->name('finance.report.generate');
-        Route::get('/export/excel', [FinanceController::class, 'exportExcel'])->name('finance.report.excel');
-        Route::get('/export/pdf', [FinanceController::class, 'exportPdf'])->name('finance.report.pdf');
+    Route::prefix('finance')->group(function () {
+        Route::get('/', [FinanceController::class, 'index'])->name('finance.index');
+        Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+        Route::get('/report/data', [ReportController::class, 'getData'])->name('report.data');
+        Route::get('/export-pdf', [ReportController::class, 'exportPDF'])->name('report.export');
+        Route::get('/export-rt-analysis-pdf', [ReportController::class, 'exportRTAnalysisPDF'])->name('report.rt_analysis');
+        Route::get('/reports/show', [ReportController::class, 'showReport'])->name('reports.show');
+        Route::get('/reports/export', [ReportController::class, 'exportPDF'])->name('reports.export');
     });
 
     // Route untuk manajemen RT -> bikin data tentang RT
