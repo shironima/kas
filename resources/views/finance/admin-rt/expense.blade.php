@@ -90,6 +90,9 @@
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    f (document.getElementById("RTExpense")) {
+        new DataTable("#RTExpense");
+    }
     window.toggleModal = function(modalId) {
         document.getElementById(modalId).classList.toggle("hidden");
     }
