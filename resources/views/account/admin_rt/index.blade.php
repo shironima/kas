@@ -86,6 +86,7 @@
             <div class="mb-3">
                 <label class="block font-medium">Password</label>
                 <input type="password" name="password" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
+                <p class="text-xs text-gray-600 mt-1">Password minimal 8 karakter.</p>
             </div>
             <div class="mb-3">
                 <label class="block font-medium">RT</label>
@@ -124,7 +125,7 @@
             <div class="mb-3">
                 <label class="block font-medium">Password Baru (Opsional)</label>
                 <input type="password" id="editPassword" name="password" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200">
-                <p class="text-xs text-gray-600 mt-1">Kosongkan jika tidak ingin mengubah password.</p>
+                <p class="text-xs text-gray-600 mt-1">Kosongkan jika tidak ingin mengubah password. Minimal password 8 karakter</p>
             </div>
             <div class="mb-3">
                 <label class="block font-medium">RT</label>
@@ -163,6 +164,32 @@
         });
     });
 
+    // Validasi password sebelum submit pada form tambah
+    $('form[action="{{ route('admin-rt.store') }}"]').on('submit', function(event) {
+        let password = $(this).find('input[name="password"]').val();
+        if (password.length < 8) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Password minimal 8 karakter!',
+            });
+        }
+    });
+
+    // Validasi password sebelum submit pada form edit
+    $('#editForm').on('submit', function(event) {
+        let password = $('#editPassword').val();
+        if (password.length > 0 && password.length < 8) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Password minimal 8 karakter jika ingin diubah!',
+            });
+        }
+    });
+
     function toggleModal(id) {
         document.getElementById(id).classList.toggle('hidden');
     }
@@ -186,11 +213,23 @@
         toggleModal('editModal');
     }
 
+    // SweetAlert konfirmasi hapus
     function confirmDelete(event, form) {
         event.preventDefault();
-        if (confirm('Yakin ingin menghapus akun Admin RT ini?')) {
-            form.submit();
-        }
+        Swal.fire({
+            title: 'Yakin ingin menghapus akun Admin RT ini?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
     }
 </script>
 
