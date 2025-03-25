@@ -68,7 +68,7 @@ Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(fu
 });
 
 Route::prefix('admin-rt')->middleware(['auth', 'role:admin_rt'])->group(function () {
-    Route::get('/dashboard', [DashboardRTController::class, 'index'])->name('dashboardRT');
+    Route::get('/dashboard', [DashboardRTController::class, 'dashboardRT'])->name('dashboardRT');
 
     Route::get('/trash-bin', [TrashBinController::class, 'index'])->name('trash-bin.index');
     Route::patch('/restore/{type}/{id}', [TrashBinController::class, 'restore'])->name('trash-bin.restore');
