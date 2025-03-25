@@ -31,7 +31,7 @@
     <div class="mt-4 w-full">
         <div class="bg-white shadow-md rounded-lg p-6">
             <div class="overflow-x-auto">
-                <table id="RTExpense" class="w-full bg-white border border-gray-200 text-sm rounded-lg">
+                <table id="expenseTable" class="w-full bg-white border border-gray-200 text-sm rounded-lg">
                     <thead>
                         <tr class="bg-gray-200 text-gray-600 uppercase text-sm">
                             <th class="py-3 px-6 text-left">Nama</th>
@@ -63,35 +63,16 @@
     </div>
 </div>
 
-<!-- Modal Tambah Pengeluaran -->
+<!-- Modal Tambah dan Edit Expense -->
 @include('finance.admin-rt.partials.expense-modal', ['modalId' => 'addExpenseModal', 'action' => route('expenses.store'), 'method' => 'POST'])
-
-<!-- Modal Edit Pengeluaran -->
 @include('finance.admin-rt.partials.expense-modal', ['modalId' => 'editExpenseModal', 'action' => '', 'method' => 'PUT'])
 
 @push('scripts')
 
 <script>
-    $(document).ready(function() {
-        $('#RTExpense').DataTable({
-            responsive: true,
-            autoWidth: false,
-            language: {
-                search: "Cari:",
-                lengthMenu: "Tampilkan _MENU_ data",
-                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                paginate: { first: "Pertama", last: "Terakhir", next: "›", previous: "‹" },
-                zeroRecords: "Tidak ada data yang ditemukan",
-                infoEmpty: "Tidak ada data yang tersedia",
-                infoFiltered: "(disaring dari _MAX_ total data)"
-            }
-        });
-    });
-</script>
-<script>
 document.addEventListener("DOMContentLoaded", function() {
-    f (document.getElementById("RTExpense")) {
-        new DataTable("#RTExpense");
+    if (document.getElementById("expenseTable")) {
+        new DataTable("#expenseTable");
     }
     window.toggleModal = function(modalId) {
         document.getElementById(modalId).classList.toggle("hidden");
