@@ -135,28 +135,28 @@
                         <span>Pengeluaran</span>
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="#" 
                         class="flex items-center gap-2 px-4 py-2 rounded-md 
                             text-gray-700 hover:bg-gray-100">
                         <i class="bi bi-file-earmark-bar-graph text-primary"></i>
                         <span>Laporan Keuangan</span>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- Divider -->
                 <hr class="my-3 border-gray-300">
 
-                <!-- MENU KEGIATAN -->
-                <li class="text-xs font-semibold text-gray-700 px-4 mt-2">KEGIATAN</li>
-                <li>
+                <!-- MENU LAINNYA -->
+                <li class="text-xs font-semibold text-gray-700 px-4 mt-2">LAINNYA</li>
+                <!-- <li>
                     <a href="#" 
                         class="flex items-center gap-2 px-4 py-2 rounded-md 
                             text-gray-700 hover:bg-gray-100">
                         <i class="bi bi-calendar-event text-warning"></i>
                         <span>Log Kegiatan</span>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- MENU TRASH BIN -->
                 <li>

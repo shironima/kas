@@ -28,29 +28,14 @@ class RTController extends Controller
     }    
 
     public function update(Request $request, RT $rt) {
+        // dd($request->all());
         $request->validate([
             'name' => 'required|unique:rts,name,' . $rt->id,
             'head_name' => 'required',
             'head_contact' => 'required',
-            'email' => 'required|email|unique:users,email,' . optional($rt->adminRT)->id,
         ]);
 
         $rt->update($request->only(['name', 'head_name', 'head_contact']));
-
-        // Update data admin_rt jika ada
-        if ($rt->adminRT) {
-            $rt->adminRT->update([
-                'name' => $request->head_name,
-                'email' => $request->email,
-            ]);
-
-            // Jika password diisi, update juga
-            if ($request->filled('password')) {
-                $rt->adminRT->update([
-                    'password' => Hash::make($request->password),
-                ]);
-            }
-        }
 
         return redirect()->route('rt.index')->with('success', 'RT successfully updated.');
     }

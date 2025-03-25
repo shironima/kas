@@ -17,7 +17,7 @@
 
     <!-- Catatan Halaman -->
     <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4">
-        <i class="ni ni-single-copy-04"></i> <strong>Catatan:</strong> Halaman ini digunakan untuk mengelola data RT dalam sistem.
+        <i class="ni ni-single-copy-04"></i> <strong>Catatan:</strong> Halaman ini digunakan untuk mengelola data RT dalam sistem. Nomor kontak yang dicantumkan akan digunakan untuk menghubungi ketua RT terkait laporan.
     </div>
 
     <!-- Tabel Data -->
@@ -102,7 +102,7 @@
 <div id="editModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white w-1/3 p-6 rounded-lg shadow-lg">
         <h5 class="text-lg font-semibold mb-4">Edit RT</h5>
-        <form id="editForm" method="POST" action="">
+        <form id="editForm" method="POST">
             @csrf
             @method('PATCH')
             <div class="mb-3">
@@ -149,11 +149,11 @@
         document.getElementById(id).classList.toggle('hidden');
     }
 
-    function editRT(id, name, head, contact) {
-        $('#editRTName').val(name);
-        $('#editRTHead').val(head);
-        $('#editRTContact').val(contact);
-        $('#editForm').attr('action', "{{ route('rt.update', '') }}/" + id);
+    function editRT(id, name, head_name, head_contact) {
+        document.getElementById('editForm').action = `/super_admin/rt/${id}`;
+        document.getElementById('editRTName').value = name;
+        document.getElementById('editRTHead').value = head_name;
+        document.getElementById('editRTContact').value = head_contact;
         toggleModal('editModal');
     }
 
