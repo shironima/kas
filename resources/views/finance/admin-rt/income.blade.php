@@ -12,7 +12,7 @@
         @endphp
 
         @foreach([
-            ['title' => 'Total Pendapatan', 'amount' => $totalIncome, 'color' => 'bg-green-500'],
+            ['title' => 'Total Pemasukan', 'amount' => $totalIncome, 'color' => 'bg-green-500'],
             ['title' => 'Total Saldo', 'amount' => $totalBalance, 'color' => 'bg-blue-500']
         ] as $card)
             <div class="{{ $card['color'] }} shadow-xl text-white p-6 rounded-lg text-center">
@@ -24,7 +24,7 @@
 
     <!-- Tombol Tambah Pendapatan -->
     <button onclick="toggleModal('addIncomeModal')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-md mt-4">
-        + Tambah Pendapatan
+        + Tambah Pemasukan
     </button>
 
     <!-- Tabel Pendapatan -->

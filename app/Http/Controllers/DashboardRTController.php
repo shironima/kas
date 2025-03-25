@@ -19,44 +19,50 @@ class DashboardRTController extends Controller
             return redirect()->route('home')->with('error', 'Anda belum terhubung dengan RT mana pun.');
         }
 
-        $rt = RT::find($rtsId);
-        $rtName = $rt ? $rt->name : 'RT Tidak Ditemukan';
+        $rtName = RT::find($rtsId)->name ?? 'RT Tidak Ditemukan';
 
-        // Total pemasukan & pengeluaran
+        $financialData = $this->getIncomeExpenseData($rtsId);
+        $chartData = $this->getChartData($rtsId);
+        $recentTransactions = $this->getRecentTransactions($rtsId);
+
+        return view('dashboard-rt', array_merge(
+            compact('rtName', 'recentTransactions'),
+            $financialData,
+            $chartData
+        ));
+    }
+
+    private function getIncomeExpenseData($rtsId)
+    {
         $totalIncome = Income::where('rts_id', $rtsId)->sum('amount') ?? 0;
         $totalExpense = Expense::where('rts_id', $rtsId)->sum('amount') ?? 0;
         $saldoKas = $totalIncome - $totalExpense;
 
-        // Data pemasukan & pengeluaran per bulan (6 bulan terakhir) untuk Bar Chart
-        $months = collect(range(5, 0))->map(function ($i) {
-            return now()->subMonths($i)->format('M Y');
-        })->toArray();
+        return compact('totalIncome', 'totalExpense', 'saldoKas');
+    }
+
+    private function getChartData($rtsId)
+    {
+        $months = collect(range(5, 0))->map(fn($i) => now()->subMonths($i)->format('M Y'))->toArray();
 
         $incomeData = Income::where('rts_id', $rtsId)
             ->whereBetween('transaction_date', [now()->subMonths(6), now()])
             ->selectRaw("DATE_FORMAT(transaction_date, '%b %Y') as month, SUM(amount) as total")
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')
-            ->toArray();
+            ->groupBy('month')->orderBy('month')->pluck('total', 'month')->toArray();
 
         $expenseData = Expense::where('rts_id', $rtsId)
             ->whereBetween('transaction_date', [now()->subMonths(6), now()])
             ->selectRaw("DATE_FORMAT(transaction_date, '%b %Y') as month, SUM(amount) as total")
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')
-            ->toArray();
+            ->groupBy('month')->orderBy('month')->pluck('total', 'month')->toArray();
 
-        $chartIncome = [];
-        $chartExpense = [];
+        $chartIncome = array_map(fn($month) => $incomeData[$month] ?? 0, $months);
+        $chartExpense = array_map(fn($month) => $expenseData[$month] ?? 0, $months);
 
-        foreach ($months as $month) {
-            $chartIncome[] = $incomeData[$month] ?? 0;
-            $chartExpense[] = $expenseData[$month] ?? 0;
-        }
+        return compact('months', 'chartIncome', 'chartExpense');
+    }
 
-        // **Tambahin lagi transaksi terbaru biar gak error**
+    private function getRecentTransactions($rtsId)
+    {
         $latestIncomes = Income::where('rts_id', $rtsId)
             ->latest()->limit(5)->get()
             ->map(fn($item) => (object) [
@@ -77,11 +83,8 @@ class DashboardRTController extends Controller
                 'type' => 'expense',
             ]);
 
-        $recentTransactions = $latestIncomes->merge($latestExpenses)->sortByDesc('date');
-
-        return view('dashboard-rt', compact(
-            'rtName', 'totalIncome', 'totalExpense', 'saldoKas',
-            'months', 'chartIncome', 'chartExpense', 'recentTransactions'
-        ));
+        return $latestIncomes->merge($latestExpenses)->sortByDesc('date');
     }
+
+
 }
