@@ -143,7 +143,7 @@
     function editContact(id, nama, noTelepon) {
         document.getElementById('editNama').value = nama;
         document.getElementById('editNoTelepon').value = noTelepon;
-        document.getElementById('editForm').action = `/contact_notifications/${id}`;
+        document.getElementById('editForm').action = `super_admin/contact_notifications/${id}`;
         toggleModal('editModal');
     }
 

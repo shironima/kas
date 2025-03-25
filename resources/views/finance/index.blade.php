@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="container mx-auto p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">Keuangan</h2>
+    </div>
+
     <!-- Ringkasan Keuangan -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @php

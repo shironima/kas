@@ -64,7 +64,7 @@ Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(fu
     Route::get('/admin-rt/data', [AdminRTController::class, 'getData'])->name('admin-rt.data');
 
     // Route untuk manajemen kategori
-    Route::resource('categories', CategoryController::class)->except(['create', 'show']);
+    Route::resource('categories', CategoryController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 });
 
 Route::prefix('admin-rt')->middleware(['auth', 'role:admin_rt'])->group(function () {

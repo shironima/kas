@@ -106,7 +106,7 @@
         <h5 class="text-lg font-semibold mb-4">Edit Kategori</h5>
         <form id="editForm" method="POST">
             @csrf
-            @method('PUT')
+            @method('PATCH')
             <div class="mb-3">
                 <label class="block font-medium">Nama Kategori</label>
                 <input type="text" name="name" id="editName" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
@@ -148,7 +148,7 @@ function toggleModal(modalId) {
 }
 
 function editCategory(id, name, description) {
-    document.getElementById('editForm').action = `/categories/${id}`;
+    document.getElementById('editForm').action = `/super_admin/categories/${id}`;
     document.getElementById('editName').value = name;
     document.getElementById('editDescription').value = description;
     toggleModal('editModal');

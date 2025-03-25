@@ -3,7 +3,11 @@
 @section('content')
 <div class="container mx-auto p-6">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold text-gray-800">Laporan Keuangan</h2>
+        <h2 class="text-2xl font-semibold text-gray-800">Cetak Laporan Keuangan</h2>
+    </div>
+
+    <div class="bg-red-100 text-red-800 p-4 rounded-md mb-4">
+        <strong>HALAMAN MASIH DALAM PENGEMBANGAN</strong> Fitur dalam halaman ini masih belum dapat berfungsi sempurna, harap bersabar.
     </div>
 
     <div class="bg-blue-100 text-blue-800 p-4 rounded-md mb-4">
