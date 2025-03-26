@@ -115,10 +115,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showAlert("success", "Pendapatan berhasil dihapus!");
+                        showAlert("success", "Pemasukan berhasil dihapus!");
                         setTimeout(() => location.reload(), 1500);
                     } else {
-                        showAlert("error", "Gagal menghapus pendapatan.");
+                        showAlert("error", "Gagal menghapus pemasukan.");
                     }
                 })
                 .catch(error => {

@@ -17,7 +17,7 @@
                     } elseif ($value >= 1000) {
                         return 'Rp ' . number_format($value / 1000, 0, ',', '.') . 'rb';
                     } else {
-                        return 'Rp ' . number_format($value, 0, ',', '.');
+                        return ' ' . number_format($value, 0, ',', '.');
                     }
                 }
 

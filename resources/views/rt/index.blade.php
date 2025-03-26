@@ -80,15 +80,8 @@
             </div>
             <div class="mb-3">
                 <label class="block font-medium">Kontak Ketua RT</label>
+                <p class="text-xs text-gray-600 mt-1">Gunakan "62" di depan nomor kontak sebagai pengganti "0". Contoh : "628123456789"</p>
                 <input type="text" name="head_contact" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
-            </div>
-            <div class="mb-3">
-                <label class="block font-medium">Email</label>
-                <input type="email" name="email" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
-            </div>
-            <div class="mb-3">
-                <label class="block font-medium">Password</label>
-                <input type="password" name="password" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-200" required>
             </div>
             <div class="flex justify-end gap-2">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-md" onclick="toggleModal('addModal')">Batal</button>
