@@ -30,6 +30,10 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
+// Reset Password
+// Route::get('/reset-password/{token}', [NewPasswordController::class, 'showResetForm'])->name('password.reset');
+// Route::post('/reset-password', [NewPasswordController::class, 'reset'])->name('password.update');  
+
 // Protected Routes
 Route::prefix('super_admin')->middleware(['auth', 'role:super_admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
